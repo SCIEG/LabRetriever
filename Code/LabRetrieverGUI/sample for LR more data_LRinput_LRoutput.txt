@@ -1,0 +1,12 @@
+Log probability for One-Suspect_No-Unknowns:
+	-5.0515e+000
+Regular probability for One-Suspect_No-Unknowns:
+	6.4000e-003
+Log probability for No-Suspect_One-Unknown:
+	-5.4615e+000
+Regular probability for No-Suspect_One-Unknown:
+	4.2471e-003
+Log ratio of One-Suspect_No-Unknowns to No-Suspect_One-Unknown:
+	4.1006e-001
+Likelihood ratio of One-Suspect_No-Unknowns to No-Suspect_One-Unknown:
+	1.5069e+000

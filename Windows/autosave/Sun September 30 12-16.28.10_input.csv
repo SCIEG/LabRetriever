@@ -1,0 +1,11 @@
+alpha,0.5
+Drop-in rate,0.01
+Drop-out rate,0.05
+Race,AFRICAN_AMERICAN
+IBD Probs,1,0,0
+CSF-Assumed,10, 11
+CSF-Suspected,9, 12
+CSF-Unattributed,
+D13-Assumed,
+D13-Suspected,10, 11
+D13-Unattributed,10, 11
