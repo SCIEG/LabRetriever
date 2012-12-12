@@ -4,6 +4,7 @@
 #include "LikelihoodSolver/LikelihoodSolver.h"
 #include "utils/DebugUtil.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QtCore/QString>
@@ -51,8 +52,8 @@ QString qstringFromSet(const set<string>& mySet) {
 
 vector<QString> vectorFromQString(const QString& qstring) {
     vector<QString> retVal;
-    unsigned int beginIndex = 0;
-    unsigned int endIndex = 0;
+    int beginIndex = 0;
+    int endIndex = 0;
     for (; endIndex < qstring.length(); endIndex++) {
         if (isSeparator(qstring[endIndex])) {
             if (beginIndex != endIndex) {
@@ -221,7 +222,7 @@ void MainWindow::on_loadButton_clicked()
         if (row.size() == 0) continue;
 
         const string& header = row[0];
-        int index;
+        unsigned int index;
         // Hack way to detect input type.
         if ((index = header.find("-Assumed")) != string::npos) {
             string locus = header.substr(0, index);
@@ -330,7 +331,7 @@ void MainWindow::on_loadButton_clicked()
 
     int indexOfExtension = qFileName.lastIndexOf('.');
     if (indexOfExtension == -1) indexOfExtension = qFileName.size();
-    QString outputFileName = qFileName.left(indexOfExtension) + "_LRoutput.txt";
+    QString outputFileName = qFileName.left(indexOfExtension) + "_LRoutput.csv";
 
     ui->outputFileLineEdit->setText(outputFileName);
 }
@@ -355,13 +356,47 @@ void MainWindow::on_outputButton_clicked()
 
     QString fileName = ui->outputFileLineEdit->text().replace('\\', '/');
     if (fileName.isEmpty()) {
-        fileName = curPath + dateTimeString + "_output.txt";
+        fileName = curPath + dateTimeString + "_output.csv";
     }
-    if (!fileName.endsWith(".txt")) {
-        fileName += ".txt";
+    if (!fileName.endsWith(".csv")) {
+        fileName += ".csv";
     }
     QFile file(fileName);
     if (file.exists()) file.remove();
+
+    QString tableFolder = "Allele Frequency Tables";
+    vector<QString> nonexistantTables;
+    QTableWidget* table = ui->tableWidget;
+    for (unsigned int row = 0; row < table->rowCount(); row++) {
+        QString locus = getDataFromCell(table, row, 0).trimmed();
+        if (!locus.isEmpty()) {
+            QString tableFileName = locus + "_B.count.csv";
+            QString tablePath = tableFolder + "/" + tableFileName;
+            ifstream fileStream(tablePath.toStdString().c_str());
+            if (!fileStream) {
+                nonexistantTables.push_back(tableFileName);
+            }
+        }
+    }
+
+    if (nonexistantTables.size()) {
+        stringstream ss;
+        ss << "The following tables cannot be found:" << endl
+           << endl;
+        for (unsigned int iii = 0; iii < nonexistantTables.size(); iii++) {
+            ss << "\t" << nonexistantTables[iii].toStdString() << endl;
+        }
+        ss << endl
+           << "Seaching in directory:" << endl
+           << endl
+           << QDir::currentPath().toStdString() << "/"
+                << tableFolder.toStdString() << endl
+           << endl
+           << "Default values will be used." << endl;
+
+        QMessageBox::information(this, "Missing Tables:",
+            QString::fromStdString(ss.str()));
+    }
 
 //    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 //        QMessageBox::critical(this, "Cannot create output file!",
@@ -411,7 +446,7 @@ void MainWindow::on_outputButton_clicked()
 
 void MainWindow::on_outputBrowseButton_clicked()
 {
-    QString inputText = QFileDialog::getOpenFileName();
+    QString inputText = QFileDialog::getSaveFileName();
     if (inputText.isEmpty()) return;
     ui->outputFileLineEdit->setText(inputText);
 }
