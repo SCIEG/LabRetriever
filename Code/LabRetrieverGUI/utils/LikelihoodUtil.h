@@ -87,6 +87,10 @@ namespace LabRetriever {
     double calculateLogProbability(const AlleleProfile& alleleProfile,
             const vector<ReplicateData>& data, const map<string, double>& alleleProportions,
             double alpha, double dropoutRate, double dropinRate, double noDropinProb);
+
+    double calculateProbability(const AlleleProfile& alleleProfile,
+            const vector<ReplicateData>& data, const map<string, double>& alleleProportions,
+            double alpha, double dropoutRate, double dropinRate, double noDropinProb);
 }
 
 

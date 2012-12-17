@@ -26,6 +26,7 @@ namespace LabRetriever {
     class OneSuspectLikelihoodSolver: public LabRetriever::CachingSolver {
         public:
             double calculateLogLikelihood(const Configuration& config);
+            double getLikelihood(const Configuration& config);
         private:
             static bool cmpFn(const Configuration& left, const Configuration& right);
             OneSuspectLikelihoodSolver();
@@ -61,6 +62,22 @@ namespace LabRetriever {
         numComplete = 1;
         return logLikelihood;
     }
+
+//    double OneSuspectLikelihoodSolver::getLikelihood(const Configuration& config) {
+//        numComplete = 0; totalToComplete = 1;
+//        double dropinRate = config.dropinRate;
+//        double noDropinProb = calculateNoDropinProbability(config);
+//        const map<string, double>& alleleProportions = config.alleleProportions;
+//        const vector<ReplicateData>& data = config.data;
+//        const AlleleProfile& suspectProfile = config.suspectProfile;
+//        double alpha = config.alpha;
+//        double dropoutRate = config.dropoutRate;
+//
+//        double likelihood = calculateProbability(suspectProfile, data, alleleProportions,
+//                alpha, dropoutRate, dropinRate, noDropinProb);
+//        numComplete = 1;
+//        return likelihood;
+//    }
 
     const OneSuspectLikelihoodSolver OneSuspectLikelihoodSolver::EXEMPLAR;
 } /* namespace LabRetriever */

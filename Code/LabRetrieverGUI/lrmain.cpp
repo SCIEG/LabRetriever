@@ -136,17 +136,10 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
         for (set<string>::const_iterator iter = allAlleles.begin(); iter != allAlleles.end();
                 iter++) {
             const string& allele = *iter;
-            if (alleleCounts.count(allele) == 0) {
+            if (alleleCounts.count(allele) == 0 || alleleCounts[allele] < 5) {
                 alleleCounts[allele] = 5;
             }
         }
-
-        for (map<string, unsigned int>::iterator iter = alleleCounts.begin();
-                iter != alleleCounts.end(); iter++) {
-            unsigned int count = iter->second;
-            iter->second = (count > 5) ? count : 5;             // Max function
-        }
-
 
         map<string, double> alleleProp =
                 getAlleleProportionsFromCounts(alleleCounts, suspectProfile);

@@ -34,13 +34,21 @@ namespace LabRetriever {
     map<string, double> getAlleleProportionsFromCounts(
             const map<string, unsigned int>& alleleCounts, const AlleleProfile& suspectProfile,
             unsigned int samplingAdjustment, double fst) {
+        const map<string, unsigned int>& suspectAlleleCounts = suspectProfile.getAlleleCounts();
         double totalCounts = 0, fstCorrection = (1-fst) / (1+fst);
         for (map<string, unsigned int>::const_iterator iter = alleleCounts.begin();
                 iter != alleleCounts.end(); iter++) {
             totalCounts += iter->second;
         }
 
-        totalCounts += 2 * samplingAdjustment;
+        double totalSuspectAlleleCounts = 0;
+        for (map<string, unsigned int>::const_iterator iter = suspectAlleleCounts.begin();
+                iter != suspectAlleleCounts.end(); iter++) {
+            totalSuspectAlleleCounts += iter->second;
+        }
+
+//        // Find the total counts in the alleleCounts, plus extra per suspect allele.
+//        totalCounts += totalSuspectAlleleCounts * samplingAdjustment;
         double multiplierCorrection = fstCorrection / totalCounts;
         map<string, double> alleleProportions;
         for (map<string, unsigned int>::const_iterator iter = alleleCounts.begin();
@@ -49,13 +57,14 @@ namespace LabRetriever {
             alleleProportions[allele] = iter->second * multiplierCorrection;
         }
 
-        const map<string, unsigned int>& suspectAlleleCounts = suspectProfile.getAlleleCounts();
+        // For each suspect allele, add in the proportions that the adjustments would have added.
         for (map<string, unsigned int>::const_iterator iter = suspectAlleleCounts.begin();
                 iter != suspectAlleleCounts.end(); iter++) {
             const string& allele = iter->first;
             unsigned int count = iter->second;
             alleleProportions[allele] += count *
-                    (samplingAdjustment * multiplierCorrection + (fst / (1 + fst)));
+//                    (samplingAdjustment * multiplierCorrection + (fst / (1 + fst)));
+                    (fst / (1 + fst));
         }
         return alleleProportions;
     }
@@ -77,9 +86,9 @@ namespace LabRetriever {
     }
 
     double calculateNoDropinProbability(const Configuration& config) {
-       double dropoutRate = config.dropoutRate;
+       double dropinRate = config.dropinRate;
        int numOfAlleles = config.alleleProportions.size();
-       return (1 - 2 * dropoutRate + pow(dropoutRate, numOfAlleles)) / (1 - dropoutRate);
+       return (1 - 2 * dropinRate + pow(dropinRate, numOfAlleles)) / (1 - dropinRate);
     }
 
     double calculateNoDropinLogProbability(const Configuration& config) {
