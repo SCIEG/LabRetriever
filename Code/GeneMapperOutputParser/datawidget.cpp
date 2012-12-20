@@ -46,8 +46,6 @@ const vector<QString>& DataWidget::getSuspectedAlleles() {
 
 void DataWidget::update() {
     this->assumedAlleles = vectorFromQString(ui->assumedLineEdit->text());
-    this->suspectedAlleles = vectorFromQString(ui->supectedLineEdit->text());
-
     this->unattributedAlleles.clear();
 
     // N^2 algorithm
@@ -103,7 +101,7 @@ void DataWidget::on_assumedLineEdit_editingFinished()
 
 void DataWidget::on_supectedLineEdit_editingFinished()
 {
-//    update();
+    this->suspectedAlleles = vectorFromQString(ui->supectedLineEdit->text());
 }
 
 void DataWidget::on_assumedLineEdit_textEdited(const QString &arg1)
