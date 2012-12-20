@@ -113,11 +113,13 @@ void MainWindow::on_loadButton_clicked()
     for (map<QString, map<string, vector<string> > >::const_iterator iter =
          this->sampleData.begin(); iter != this->sampleData.end(); iter++) {
         QString sampleName = iter->first;
-        ui->exportSampleListWidget->addItem(sampleName);
+        ui->excludeSampleListWidget->addItem(sampleName);
     }
 
-    ui->exportSampleListWidget->setCurrentRow(0);
-    loadSampleData(ui->exportSampleListWidget->item(0)->text());
+    if (ui->excludeSampleListWidget->count() > 0) {
+        ui->excludeSampleListWidget->setCurrentRow(0);
+        loadSampleData(ui->excludeSampleListWidget->item(0)->text());
+    }
 
     int indexOfExtension = qFileName.lastIndexOf('.');
     if (indexOfExtension == -1) indexOfExtension = qFileName.size();
