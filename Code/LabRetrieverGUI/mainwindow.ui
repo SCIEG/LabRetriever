@@ -72,6 +72,11 @@
       <widget class="QComboBox" name="raceComboBox">
        <item>
         <property name="text">
+         <string>ALL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>AFRICAN_AMERICAN</string>
         </property>
        </item>

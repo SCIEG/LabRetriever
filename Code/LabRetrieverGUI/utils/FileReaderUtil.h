@@ -24,6 +24,7 @@ namespace LabRetriever {
      * Temporary indexing until frequency table formats are finalized.
      */
     enum Race {
+        ALL = -1,
         AFRICAN_AMERICAN = 1,
         CAUCASIAN = 3,
         HISPANIC = 5,

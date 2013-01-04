@@ -16,6 +16,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <boost/tokenizer.hpp>
+
 using namespace std;
 
 namespace LabRetriever {
@@ -47,38 +49,59 @@ namespace LabRetriever {
 
     map<string, unsigned int> getAlleleCountsFromFile(const string& fileName, Race race) {
         map<string, unsigned int> retVal;
-        ifstream file;
-        file.open(fileName.c_str());
+//        ifstream file;
+//        file.open(fileName.c_str());
 
-        string line;
+//        string line;
 
         // Chomp the first line to get read of headers.
-        getline(file, line);
-        while (file.good()) {
+//        getline(file, line);
+//        while (file.good()) {
+//            unsigned int val;
+//            getline(file, line);
+//            if (line.size() == 0) break;
+//            vector<string> tokenList = makeTokenList(line);
+//            istringstream(tokenList[(int) race]) >> val;
+//            retVal[tokenList[0]] = val;
+//        }
+
+//        file.close();
+
+        vector< vector<string> > rawCsv = readRawCsv(fileName);
+
+        for (unsigned int rowNum = 1; rowNum < rawCsv.size(); rowNum++) {
+            vector<string> row = rawCsv[rowNum];
+            string allele = row[0];
+
             unsigned int val;
-            getline(file, line);
-            if (line.size() == 0) break;
-            vector<string> tokenList = makeTokenList(line);
-            istringstream(tokenList[(int) race]) >> val;
-            retVal[tokenList[0]] = val;
+            // TODO: temporary until format is fixed.
+            if (race == ALL) {
+                unsigned int temp;
+                istringstream(row[AFRICAN_AMERICAN]) >> val;
+                istringstream(row[CAUCASIAN]) >> temp;
+                val += temp;
+                istringstream(row[HISPANIC]) >> temp;
+                val += temp;
+            } else {
+                istringstream(row[(int) race]) >> val;
+            }
+
+            retVal[allele] = val;
         }
-
-        file.close();
-
         return retVal;
     }
 
     vector< vector<string> > readRawCsv(const string& fileName) {
-        ifstream file;
-        file.open(fileName.c_str());
-        string line;
+        ifstream file(fileName.c_str());
 
+        if (!file.is_open()) {
+            // TODO: Error here!
+        }
+
+        string line;
         vector< vector<string> > retVal;
 
-        while (file.good()) {
-            getline(file, line);
-            if (line.size() == 0) break;
-            line = trim(line);
+        while (getline(file, line)) {
             vector<string> tokenList = makeTokenList(line);
             retVal.push_back(tokenList);
         }
@@ -93,104 +116,110 @@ namespace LabRetriever {
      */
     vector<string> makeTokenList(const string& line) {
         vector<string> retVal;
-        string readInVal = trim(line);
-        while (true) {
-            // Trimming is not exactly correct, but there should not be whitespace.
-            string nextToken = trim(getToken(readInVal));
-            retVal.push_back(nextToken);
+        typedef boost::tokenizer< boost::escaped_list_separator<char> > Tokenizer;
 
-            if (readInVal.size() == 0)
-                break;
-            else {
-                while (readInVal[0] == ' ') {
-                    readInVal.erase(0, 1);
-                }
-                readInVal.erase(0, 1);
-            }
+        Tokenizer tok(line);
+        for (Tokenizer::iterator iter = tok.begin(); iter != tok.end(); iter++) {
+            string str = *iter;
+            retVal.push_back(trim(str));
         }
-        return retVal;
-    }
+//        while (true) {
+//            // Trimming is not exactly correct, but there should not be whitespace.
+//            string nextToken = trim(getToken(readInVal));
+//            retVal.push_back(nextToken);
 
-    /*
-     * Gets the next token (an element) from a csv string and advances the string to the next comma.
-     */
-    string getToken(string& line) {
-        while (line.size() != 0 && line[0] == ' ') {
-            line.erase(0, 1);
-        }
+//            if (readInVal.size() == 0)
+//                break;
+//            else {
+//                while (readInVal[0] == ' ') {
+//                    readInVal.erase(0, 1);
+//                }
+//                readInVal.erase(0, 1);
+//            }
+//        }
+//        return retVal;
+//    }
 
-        if (line.size() == 0) return "";
+//    /*
+//     * Gets the next token (an element) from a csv string and advances the string to the next comma.
+//     */
+//    string getToken(string& line) {
+//        while (line.size() != 0 && line[0] == ' ') {
+//            line.erase(0, 1);
+//        }
 
-        string retVal;
-        if (line[0] == '"') {
-            // Continue until you find an unescaped double quote.
-            unsigned int index = 1;
-            bool isDone = false;
-            for (; index < line.size() - 1; index++) {
-                char curChar = line[index];
-                char nextChar = line[index + 1];
-                switch (curChar) {
-                    case '\\':
-                        switch (nextChar) {
-                            case '"':
-                            case '\\':
-                                // If it's an escaped character, use the escaped character and
-                                // advance the index.
-                                retVal += nextChar;
-                                index++;
-                                break;
-                            default:
-                                retVal += '\\';
-                                break;
-                        }
-                        break;
-                    case '"':
-                        switch (nextChar) {
-                            case '"':
-                                retVal += '"';
-                                index++;
-                                break;
-                            case ',':
-                                // If it's not a double quote, then it must be the end.
-                                isDone = true;
-                                break;
-                            default:
-                                // Should not be here in a valid csv!
-                                assert(false);
-                                break;
-                        }
-                        break;
-                    default:
-                        retVal += curChar;
-                        break;
-                }
+//        if (line.size() == 0) return "";
 
-                if (isDone) {
-                    break;
-                }
-            }
+//        string retVal;
+//        if (line[0] == '"') {
+//            // Continue until you find an unescaped double quote.
+//            unsigned int index = 1;
+//            bool isDone = false;
+//            for (; index < line.size() - 1; index++) {
+//                char curChar = line[index];
+//                char nextChar = line[index + 1];
+//                switch (curChar) {
+//                    case '\\':
+//                        switch (nextChar) {
+//                            case '"':
+//                            case '\\':
+//                                // If it's an escaped character, use the escaped character and
+//                                // advance the index.
+//                                retVal += nextChar;
+//                                index++;
+//                                break;
+//                            default:
+//                                retVal += '\\';
+//                                break;
+//                        }
+//                        break;
+//                    case '"':
+//                        switch (nextChar) {
+//                            case '"':
+//                                retVal += '"';
+//                                index++;
+//                                break;
+//                            case ',':
+//                                // If it's not a double quote, then it must be the end.
+//                                isDone = true;
+//                                break;
+//                            default:
+//                                // Should not be here in a valid csv!
+//                                assert(false);
+//                                break;
+//                        }
+//                        break;
+//                    default:
+//                        retVal += curChar;
+//                        break;
+//                }
 
-            if (!isDone) {
-                // This must be the last token.
-                if (index != line.size() - 1 || line[index] != '"') {
-                    // If the index points past the end of the string or if the last character is
-                    // not a double quote, then it was an invalid parse.
-                    assert(false);
-                }
-            }
+//                if (isDone) {
+//                    break;
+//                }
+//            }
 
-            // At this point, index should point to the ending double quote.
-            line.erase(0, index + 1);
-        } else {
-            // If unquoted, then there shouldn't be a comma as an element. Just find the next comma
-            // and split there.
-            int index = line.find(',');
-            if (index == string::npos) {
-                index = line.size();
-            }
-            retVal = line.substr(0, index);
-            line.erase(0, index);
-        }
+//            if (!isDone) {
+//                // This must be the last token.
+//                if (index != line.size() - 1 || line[index] != '"') {
+//                    // If the index points past the end of the string or if the last character is
+//                    // not a double quote, then it was an invalid parse.
+//                    assert(false);
+//                }
+//            }
+
+//            // At this point, index should point to the ending double quote.
+//            line.erase(0, index + 1);
+//        } else {
+//            // If unquoted, then there shouldn't be a comma as an element. Just find the next comma
+//            // and split there.
+//            int index = line.find(',');
+//            if (index == string::npos) {
+//                index = line.size();
+//            }
+//            retVal = line.substr(0, index);
+//            line.erase(0, index);
+//        }
 
         return retVal;
     }

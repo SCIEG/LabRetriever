@@ -6,10 +6,11 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
     vector<double> solverIndexToLogProb(likelihoodSolvers.size(), 0);
     vector<map<string, double> > solverIndexToLocusLogProb(likelihoodSolvers.size());
 
+    // These are defaults; if specified, will be in the input file.
     double alpha = 0.5;
     double dropinRate = 0.01;
     double dropoutRate = 0.05;
-    Race race = AFRICAN_AMERICAN;
+    Race race = ALL;
     IdenticalByDescentProbability identicalByDescentProbability(1, 0, 0);
     map<string, vector<string> > locusToSuspectAlleles;
     map<string, set<string> > locusToAssumedAlleles;

@@ -1,0 +1,7 @@
+Requires boost library to parse CSV files. You can download boost here:
+
+    http://www.boost.org/
+
+The path to the directory to the boost folder should be added to the INCLUDE
+variable in the makefile, or if using QT, the INCLUDEPATH variable in the .pro
+files.
