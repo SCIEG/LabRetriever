@@ -42,13 +42,32 @@ namespace LabRetriever {
             return CAUCASIAN;
         } else if (name == "HISPANIC") {
             return HISPANIC;
+        } else if (name == "ALL") {
+            return ALL;
         }
         // TODO: fix default
-        return AFRICAN_AMERICAN;
+        return ALL;
     }
 
-    map<string, unsigned int> getAlleleCountsFromFile(const string& fileName, Race race) {
-        map<string, unsigned int> retVal;
+    string stringFromRace(Race race) {
+        switch (race) {
+            case AFRICAN_AMERICAN:
+                return "AFRICAN_AMERICAN";
+            case CAUCASIAN:
+                return "CAUCASIAN";
+            case HISPANIC:
+                return "HISPANIC";
+            // TODO: fix default -- 'ALL' shouldn't ever appear
+            case ALL:
+            default:
+                return "ALL";
+        }
+    }
+
+    // TODO: optimize for 'ALL' case
+    map<Race, map<string, unsigned int> > getAlleleCountsFromFile(const string& fileName,
+            vector<Race> races) {
+        map<Race, map<string, unsigned int> > retVal;
 //        ifstream file;
 //        file.open(fileName.c_str());
 
@@ -69,24 +88,24 @@ namespace LabRetriever {
 
         vector< vector<string> > rawCsv = readRawCsv(fileName);
 
+        // Read header data to figure out the columns.
+        vector<string> header = rawCsv[0];
+        map<Race, unsigned int> raceToColNum;
+        // Skip the first column, which is 'Allele'
+        for (unsigned int headerIndex = 1; headerIndex < header.size(); headerIndex++) {
+            raceToColNum[raceFromString(header[headerIndex])] = headerIndex;
+        }
+
         for (unsigned int rowNum = 1; rowNum < rawCsv.size(); rowNum++) {
             vector<string> row = rawCsv[rowNum];
             string allele = row[0];
 
-            unsigned int val;
-            // TODO: temporary until format is fixed.
-            if (race == ALL) {
-                unsigned int temp;
-                istringstream(row[AFRICAN_AMERICAN]) >> val;
-                istringstream(row[CAUCASIAN]) >> temp;
-                val += temp;
-                istringstream(row[HISPANIC]) >> temp;
-                val += temp;
-            } else {
-                istringstream(row[(int) race]) >> val;
+            for (unsigned int i = 0; i < races.size(); i++) {
+                Race race = races[i];
+                unsigned int val;
+                istringstream(row[raceToColNum[race]]) >> val;
+                retVal[race][allele] = val;
             }
-
-            retVal[allele] = val;
         }
         return retVal;
     }

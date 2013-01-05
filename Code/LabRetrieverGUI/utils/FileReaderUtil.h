@@ -25,17 +25,20 @@ namespace LabRetriever {
      */
     enum Race {
         ALL = -1,
+        RACE_START = 1,
         AFRICAN_AMERICAN = 1,
-        CAUCASIAN = 3,
-        HISPANIC = 5,
+        CAUCASIAN,
+        HISPANIC,
+        RACE_END
     };
 
     Race raceFromString(const string& name);
 
-    /*
-     * Temporary function until frequency table formats are finalized.
-     */
-    map<string, unsigned int> getAlleleCountsFromFile(const string& fileName, Race race);
+    string stringFromRace(Race race);
+
+    // TODO: Change name?
+    map<Race, map<string, unsigned int> > getAlleleCountsFromFile(const string& fileName,
+                vector<Race> races);
 
     vector< vector<string> > readRawCsv(const string& fileName);
 

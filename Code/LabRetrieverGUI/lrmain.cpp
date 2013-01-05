@@ -1,11 +1,95 @@
 #include "lrmain.h"
 #include "utils/DebugUtil.h"
 
-vector<double> run(const string& inputFileName, const string& outputFileName,
-        vector<LikelihoodSolver*> likelihoodSolvers) {
-    vector<double> solverIndexToLogProb(likelihoodSolvers.size(), 0);
-    vector<map<string, double> > solverIndexToLocusLogProb(likelihoodSolvers.size());
+void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>& likelihoodSolvers,
+        const map<Race, vector<map<string, double> > >& raceToSolverIndexToLocusLogProb,
+        const map<Race, vector<double> >& raceToSolverIndexToLogProb,
+        const vector<Race> races,
+        const string& outputFileName) {
+    // TODO: Output in proper format to file:
+    stringstream outputStringStream;
+    outputStringStream.setf(ios::scientific);
+    outputStringStream.precision(4);
 
+    for (unsigned int raceIndex = 0; raceIndex < races.size(); raceIndex++) {
+        Race curRace = races[raceIndex];
+
+        const vector<map<string, double> >& solverIndexToLocusLogProb =
+                raceToSolverIndexToLocusLogProb.find(curRace)->second;
+        const vector<double>& solverIndexToLogProb =
+                raceToSolverIndexToLogProb.find(curRace)->second;
+
+        // Output race
+        outputStringStream << stringFromRace(curRace) << endl;
+
+        // Output probability header
+        outputStringStream << "Probabilities, total";
+        for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+                iter++) {
+            const string& locus = *iter;
+            outputStringStream << ", " << locus;
+        }
+        outputStringStream << endl;
+
+        // Output probability data
+        for (unsigned int solverIndex = 0; solverIndex < likelihoodSolvers.size(); solverIndex++) {
+            map<string, double> locusToLogProb = solverIndexToLocusLogProb[solverIndex];
+            outputStringStream << likelihoodSolvers[solverIndex]->name << ", "
+                    << exp(solverIndexToLogProb[solverIndex]);
+            for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+                    iter++) {
+                const string& locus = *iter;
+                double logProb = locusToLogProb[locus];
+                outputStringStream << ", " << exp(logProb);
+            }
+            outputStringStream << endl;
+        }
+
+        outputStringStream << endl;
+
+        // Output probability ratio header
+        outputStringStream << "Probabilities Ratios, total";
+        for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+                iter++) {
+            const string& locus = *iter;
+            outputStringStream << ", " << locus;
+        }
+
+        outputStringStream << endl;
+
+        // Output probability ratios
+        for (unsigned int i = 0; i < likelihoodSolvers.size(); i++) {
+            map<string, double> locusToLogProb_i = solverIndexToLocusLogProb[i];
+            for (unsigned int j = i + 1; j < likelihoodSolvers.size(); j++) {
+                map<string, double> locusToLogProb_j = solverIndexToLocusLogProb[j];
+                string ratioName = likelihoodSolvers[i]->name + " to " + likelihoodSolvers[j]->name;
+                double diff = solverIndexToLogProb[i] - solverIndexToLogProb[j];
+                outputStringStream << ratioName << ", " << exp(diff);
+                for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+                        iter++) {
+                    const string& locus = *iter;
+                    double logProbDiff = locusToLogProb_i[locus] - locusToLogProb_j[locus];
+                    outputStringStream << ", " << exp(logProbDiff);
+                }
+                outputStringStream << endl;
+            }
+        }
+        outputStringStream << endl;
+    }
+
+
+    string dataToOutput = outputStringStream.str();
+
+    cout << dataToOutput;
+
+    ofstream myFileStream;
+    myFileStream.open(outputFileName.c_str());
+    myFileStream << dataToOutput;
+    myFileStream.close();
+}
+
+map<Race, vector<double> > run(const string& inputFileName, const string& outputFileName,
+        vector<LikelihoodSolver*> likelihoodSolvers) {
     // These are defaults; if specified, will be in the input file.
     double alpha = 0.5;
     double dropinRate = 0.01;
@@ -79,6 +163,8 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
             }
         } else if (header == "Race") {
             if (row.size() <= 1) continue;
+            // Currently only expect one race or ALL. Change this to vector if multiple races
+            // are needed but not all.
             race = raceFromString(row[1]);
         } else if (header == "IBD Probs") {
             if (row.size() <= 3 || row[1].size() == 0 ||
@@ -88,6 +174,29 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
             identicalByDescentProbability.bothAllelesInCommonProb = atof(row[3].c_str());
         }
     }
+
+    vector<Race> races;
+    // Determine the races to run.
+    if (race == ALL) {
+        for (int r = (int) RACE_START; r < (int) RACE_END; r += 1) {
+            races.push_back((Race) r);
+        }
+    } else {
+        races.push_back(race);
+    }
+
+    map<Race, vector<double> > raceToSolverIndexToLogProb;
+    map<Race, vector<map<string, double> > > raceToSolverIndexToLocusLogProb;
+
+    for (unsigned int raceIndex = 0; raceIndex < races.size(); raceIndex++) {
+        Race r = races[raceIndex];
+        raceToSolverIndexToLogProb.insert(
+                pair<Race, vector<double> >(r, vector<double>(likelihoodSolvers.size(), 0)));
+        raceToSolverIndexToLocusLogProb.insert(
+                pair<Race, vector<map<string, double> > >(r,
+                        vector<map<string, double> >(likelihoodSolvers.size())));
+    }
+
 
     // TODO: check for known loci and alleles.
     // I think this todo is done.
@@ -129,117 +238,42 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
                     unattributedAlleles[unattribIndex], assumedAlleles));
         }
 
-        map<string, unsigned int> alleleCounts =
-                getAlleleCountsFromFile("Allele Frequency Tables/" + locus + "_B.count.csv", race);
+        map<Race, map<string, unsigned int> > raceToAlleleCounts =
+                getAlleleCountsFromFile("Allele Frequency Tables/" + locus + "_B.count.csv",
+                        races);
 
-        // Edit the allele counts so that every allele is given at least 5 counts, even if the
-        // allele does not appear in the table.
-        for (set<string>::const_iterator iter = allAlleles.begin(); iter != allAlleles.end();
-                iter++) {
-            const string& allele = *iter;
-            if (alleleCounts.count(allele) == 0 || alleleCounts[allele] < 5) {
-                alleleCounts[allele] = 5;
+        for (unsigned int raceIndex = 0; raceIndex < races.size(); raceIndex++) {
+            Race curRace = races[raceIndex];
+            map<string, unsigned int> alleleCounts = raceToAlleleCounts[curRace];
+
+            // Edit the allele counts so that every allele is given at least 5 counts, even if the
+            // allele does not appear in the table.
+            for (set<string>::const_iterator iter = allAlleles.begin(); iter != allAlleles.end();
+                    iter++) {
+                const string& allele = *iter;
+                if (alleleCounts.count(allele) == 0 || alleleCounts[allele] < 5) {
+                    alleleCounts[allele] = 5;
+                }
             }
-        }
 
-        map<string, double> alleleProp =
-                getAlleleProportionsFromCounts(alleleCounts, suspectProfile);
+            map<string, double> alleleProp =
+                    getAlleleProportionsFromCounts(alleleCounts, suspectProfile);
 
-        Configuration config(suspectProfile, replicateDatas, alleleProp,
-                identicalByDescentProbability, dropoutRate, dropinRate, alpha);
+            Configuration config(suspectProfile, replicateDatas, alleleProp,
+                    identicalByDescentProbability, dropoutRate, dropinRate, alpha);
 
-        for (unsigned int solverIndex = 0; solverIndex < likelihoodSolvers.size(); solverIndex++) {
-            LikelihoodSolver* solver = likelihoodSolvers[solverIndex];
-            double logLikelihood = solver->getLogLikelihood(config);
-            solverIndexToLocusLogProb[solverIndex][locus] = logLikelihood;
-            solverIndexToLogProb[solverIndex] += logLikelihood;
+            for (unsigned int solverIndex = 0; solverIndex < likelihoodSolvers.size();
+                    solverIndex++) {
+                LikelihoodSolver* solver = likelihoodSolvers[solverIndex];
+                double logLikelihood = solver->getLogLikelihood(config);
+                raceToSolverIndexToLocusLogProb[curRace][solverIndex][locus] = logLikelihood;
+                raceToSolverIndexToLogProb[curRace][solverIndex] += logLikelihood;
+            }
         }
     }
 
     // TODO: Output in proper format to file:
-    stringstream logProbStream, regProbStream;
-    logProbStream.setf(ios::scientific);
-    logProbStream.precision(4);
-    regProbStream.setf(ios::scientific);
-    regProbStream.precision(4);
-
-    logProbStream << "Log Probabilities, total";
-    regProbStream << "Probabilities, total";
-    for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
-            iter++) {
-        const string& locus = *iter;
-        logProbStream << ", " << locus;
-        regProbStream << ", " << locus;
-    }
-    logProbStream << endl;
-    regProbStream << endl;
-
-    for (unsigned int solverIndex = 0; solverIndex < likelihoodSolvers.size(); solverIndex++) {
-        map<string, double> locusToLogProb = solverIndexToLocusLogProb[solverIndex];
-
-        logProbStream << likelihoodSolvers[solverIndex]->name << ", "
-                << solverIndexToLogProb[solverIndex];
-        regProbStream << likelihoodSolvers[solverIndex]->name << ", "
-                << exp(solverIndexToLogProb[solverIndex]);
-        for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
-                iter++) {
-            const string& locus = *iter;
-            double logProb = locusToLogProb[locus];
-            logProbStream << ", " << logProb;
-            regProbStream << ", " << exp(logProb);
-        }
-        logProbStream << endl;
-        regProbStream << endl;
-    }
-
-    logProbStream << endl;
-    regProbStream << endl;
-
-    logProbStream << "Log Probabilities Difference, total";
-    regProbStream << "Probabilities Ratios, total";
-    for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
-            iter++) {
-        const string& locus = *iter;
-        logProbStream << ", " << locus;
-        regProbStream << ", " << locus;
-    }
-    logProbStream << endl;
-    regProbStream << endl;
-
-
-    for (unsigned int i = 0; i < likelihoodSolvers.size(); i++) {
-        map<string, double> locusToLogProb_i = solverIndexToLocusLogProb[i];
-        for (unsigned int j = i + 1; j < likelihoodSolvers.size(); j++) {
-            map<string, double> locusToLogProb_j = solverIndexToLocusLogProb[j];
-
-            string ratioName = likelihoodSolvers[i]->name + " to " + likelihoodSolvers[j]->name;
-            double diff = solverIndexToLogProb[i] - solverIndexToLogProb[j];
-            logProbStream << ratioName << ", " << diff;
-            regProbStream << ratioName << ", " << exp(diff);
-
-
-            for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
-                    iter++) {
-                const string& locus = *iter;
-                double logProbDiff = locusToLogProb_i[locus] - locusToLogProb_j[locus];
-                logProbStream << ", " << logProbDiff;
-                regProbStream << ", " << exp(logProbDiff);
-            }
-            logProbStream << endl;
-            regProbStream << endl;
-        }
-    }
-
-    stringstream outputStringStream;
-    outputStringStream << regProbStream.str() << endl << logProbStream.str();
-    string dataToOutput = outputStringStream.str();
-
-//    cout << dataToOutput;
-
-    ofstream myFileStream;
-    myFileStream.open(outputFileName.c_str());
-    myFileStream << dataToOutput;
-    myFileStream.close();
-
-    return solverIndexToLogProb;
+    outputData(lociToCheck, likelihoodSolvers, raceToSolverIndexToLocusLogProb,
+            raceToSolverIndexToLogProb, races, outputFileName);
+    return raceToSolverIndexToLogProb;
 }
