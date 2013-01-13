@@ -1,0 +1,13 @@
+Probabilities, total, CSF
+One-Suspect_No-Unknowns, 8.9338e-001, 8.9338e-001
+No-Suspect_One-Unknown, 5.1998e-003, 5.1998e-003
+
+Probabilities Ratios, total, CSF
+One-Suspect_No-Unknowns to No-Suspect_One-Unknown, 1.7181e+002, 1.7181e+002
+
+Log Probabilities, total, CSF
+One-Suspect_No-Unknowns, -1.1274e-001, -1.1274e-001
+No-Suspect_One-Unknown, -5.2591e+000, -5.2591e+000
+
+Log Probabilities Difference, total, CSF
+One-Suspect_No-Unknowns to No-Suspect_One-Unknown, 5.1464e+000, 5.1464e+000

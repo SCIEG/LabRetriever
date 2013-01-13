@@ -1,0 +1,13 @@
+Probabilities, total, D13, D18, D21, D3, D5, D7, D8, FGA, vWA
+One-Suspect_Two-Unknowns, 1.8167e-036, 1.6445e-003, 5.8032e-009, 8.4555e-005, 1.8910e-001, 3.3006e-001, 3.6627e-009, 3.6351e-002, 3.6282e-009, 7.4670e-002
+No-Suspect_Three-Unknowns, 4.8584e-041, 6.4586e-005, 6.5159e-009, 4.9980e-007, 7.9478e-002, 2.2302e-001, 3.3676e-009, 3.1942e-002, 6.1698e-009, 1.9636e-002
+
+Probabilities Ratios, total, D13, D18, D21, D3, D5, D7, D8, FGA, vWA
+One-Suspect_Two-Unknowns to No-Suspect_Three-Unknowns, 3.7394e+004, 2.5462e+001, 8.9063e-001, 1.6918e+002, 2.3793e+000, 1.4800e+000, 1.0876e+000, 1.1380e+000, 5.8806e-001, 3.8027e+000
+
+Log Probabilities, total, D13, D18, D21, D3, D5, D7, D8, FGA, vWA
+One-Suspect_Two-Unknowns, -8.2296e+001, -6.4103e+000, -1.8965e+001, -9.3781e+000, -1.6655e+000, -1.1085e+000, -1.9425e+001, -3.3145e+000, -1.9435e+001, -2.5947e+000
+No-Suspect_Three-Unknowns, -9.2825e+001, -9.6475e+000, -1.8849e+001, -1.4509e+001, -2.5323e+000, -1.5005e+000, -1.9509e+001, -3.4438e+000, -1.8904e+001, -3.9304e+000
+
+Log Probabilities Difference, total, D13, D18, D21, D3, D5, D7, D8, FGA, vWA
+One-Suspect_Two-Unknowns to No-Suspect_Three-Unknowns, 1.0529e+001, 3.2372e+000, -1.1582e-001, 5.1309e+000, 8.6679e-001, 3.9204e-001, 8.4006e-002, 1.2932e-001, -5.3093e-001, 1.3357e+000

@@ -1,0 +1,35 @@
+alpha,
+Drop-in rate,
+Drop-out rate,
+Race,
+IBD Probs,1,0,0
+CSF-Assumed,11,12
+CSF-Suspected,11,12
+D13-Assumed,11
+D13-Suspected,12,12
+D16-Assumed,11,12
+D16-Suspected,10,11
+D18-Assumed,12,15
+D18-Suspected,15,16
+D19-Assumed,13,14
+D19-Suspected,13,14
+D21-Assumed,27,31.2
+D21-Suspected,28,31.2
+D2-Assumed,17,25
+D2-Suspected,21,22
+D3-Assumed,15,16
+D3-Suspected,16,17
+D5-Assumed,11
+D5-Suspected,11,11
+D7-Assumed,9,10
+D7-Suspected,10,10
+D8-Assumed,14,15
+D8-Suspected,12,12
+FGA-Assumed,19,21
+FGA-Suspected,20,22
+THO-Assumed,8
+THO-Suspected,7,7
+TPO-Assumed,8
+TPO-Suspected,8,8
+vWA-Assumed,17
+vWA-Suspected,15,17

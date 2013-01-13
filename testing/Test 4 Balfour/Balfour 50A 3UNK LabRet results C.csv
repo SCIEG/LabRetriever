@@ -1,0 +1,13 @@
+Probabilities, total, D13, D21, D3, D5, D8, vWA
+One-Suspect_Two-Unknowns,1.89E-12,8.37E-04,1.40E-05,1.75E-01,3.35E-01,4.27E-02,6.45E-02
+No-Suspect_Three-Unknowns,1.07E-17,2.43E-05,4.65E-08,7.09E-02,2.24E-01,3.74E-02,1.59E-02
+,,,,,,,
+Probabilities Ratios, total, D13, D21, D3, D5, D8, vWA
+One-Suspect_Two-Unknowns to No-Suspect_Three-Unknowns,1.77E+05,3.45E+01,3.02E+02,2.46E+00,1.50E+00,1.14E+00,4.05E+00
+,,,,,,,
+Log Probabilities, total, D13, D21, D3, D5, D8, vWA
+One-Suspect_Two-Unknowns,-2.70E+01,-7.09E+00,-1.12E+01,-1.75E+00,-1.09E+00,-3.15E+00,-2.74E+00
+No-Suspect_Three-Unknowns,-3.91E+01,-1.06E+01,-1.69E+01,-2.65E+00,-1.50E+00,-3.29E+00,-4.14E+00
+,,,,,,,
+Log Probabilities Difference, total, D13, D21, D3, D5, D8, vWA
+One-Suspect_Two-Unknowns to No-Suspect_Three-Unknowns,1.21E+01,3.54E+00,5.71E+00,9.01E-01,4.04E-01,1.32E-01,1.40E+00

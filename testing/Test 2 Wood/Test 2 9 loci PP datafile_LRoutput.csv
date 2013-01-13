@@ -1,0 +1,13 @@
+Probabilities, total, D8
+One-Suspect_No-Unknowns, 8.5512e-001, 8.5512e-001
+No-Suspect_One-Unknown, 2.3863e-001, 2.3863e-001
+
+Probabilities Ratios, total, D8
+One-Suspect_No-Unknowns to No-Suspect_One-Unknown, 3.5835e+000, 3.5835e+000
+
+Log Probabilities, total, D8
+One-Suspect_No-Unknowns, -1.5651e-001, -1.5651e-001
+No-Suspect_One-Unknown, -1.4329e+000, -1.4329e+000
+
+Log Probabilities Difference, total, D8
+One-Suspect_No-Unknowns to No-Suspect_One-Unknown, 1.2763e+000, 1.2763e+000
