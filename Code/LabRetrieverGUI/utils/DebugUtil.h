@@ -13,7 +13,7 @@
 #ifndef DEBUGUTIL_H_
 #define DEBUGUTIL_H_
 
-#include "Configuration.h"
+#include "../Configuration.h"
 #include <map>
 #include <vector>
 #include <set>

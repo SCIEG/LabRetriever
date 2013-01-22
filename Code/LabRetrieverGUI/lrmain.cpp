@@ -242,3 +242,43 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
 
     return solverIndexToLogProb;
 }
+
+int main(int argc, char *argv[]) {
+    vector<LikelihoodSolver*> solversToUse;
+
+    if (argc < 2) {
+        std::cout << "Usage is <inputfile> <outputfile> [<[01][0123]>, ...]\nexample: lr input.csv output.csv 01 02 03 10 11 12";
+        return;
+    }
+    if (argc > 2) {
+        for (int i = 3; i < argc; i++) {
+            if (argv[i][0] == '0') {
+                switch(argv[i][1]) {
+                case '3':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_THREE_UNKNOWNS));
+                    break;
+                case '2':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_TWO_UNKNOWNS));
+                    break;
+                default:
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_ONE_UNKNOWN));
+                }
+            } else { // one suspect
+                switch(argv[i][1]) {
+                case '2':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::ONE_SUSPECT_TWO_UNKNOWNS));
+                    break;
+                case '1':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::ONE_SUSPECT_ONE_UNKNOWN));
+                    break;
+                default:
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::ONE_SUSPECT_NO_UNKNOWNS));
+                }
+            }
+        }
+    } else {
+        solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_ONE_UNKNOWN));
+    }
+
+    run(argv[1], argv[2], solversToUse);
+}

@@ -11,9 +11,9 @@
 //==================================================================================================
 
 
-#include "LikelihoodSolver/CachingSolver.h"
-#include "utils/LikelihoodUtil.h"
-#include "utils/ProbabilityUtil.h"
+#include "CachingSolver.h"
+#include "../utils/LikelihoodUtil.h"
+#include "../utils/ProbabilityUtil.h"
 #include <iostream>
 #include <algorithm>
 #include <cassert>

@@ -13,7 +13,7 @@
 #ifndef LIKELIHOODUTIL_H_
 #define LIKELIHOODUTIL_H_
 
-#include "Configuration.h"
+#include "../Configuration.h"
 #include <vector>
 #include <map>
 

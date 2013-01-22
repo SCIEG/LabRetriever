@@ -45,7 +45,7 @@
 #ifndef LIKELIHOODSOLVER_H_
 #define LIKELIHOODSOLVER_H_
 
-#include "Configuration.h"
+#include "../Configuration.h"
 #include <map>
 
 

@@ -13,7 +13,7 @@
 #ifndef PROBABILITYUTIL_H_
 #define PROBABILITYUTIL_H_
 
-#include "Configuration.h"
+#include "../Configuration.h"
 #include <cmath>
 #include <map>
 #include <string>

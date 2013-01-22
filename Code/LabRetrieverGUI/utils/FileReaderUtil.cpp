@@ -15,6 +15,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -145,6 +146,10 @@ namespace LabRetriever {
                         }
                         break;
                     case '"':
+                        if (index == line.size() - 2) {
+                            isDone = true;
+                            break;
+                        }
                         switch (nextChar) {
                             case '"':
                                 retVal += '"';
