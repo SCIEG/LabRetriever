@@ -1,0 +1,140 @@
+<html><head>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/scieg.css" rel="stylesheet" media="screen">
+    <style>
+        .output {
+            background-color: white;
+            margin: 15px;
+        }
+        #running {
+            border-color: green;
+            border-width: 3px;
+        }
+        input[type='text'] {
+            margin:0;
+            padding:0;
+        }
+        body {
+            padding:10px;
+        }
+    </style>
+    <script>
+        (function() {
+            Ti.UI.currentWindow.setHeight(800);
+            Ti.UI.currentWindow.setWidth(1200);
+            Ti.UI.currentWindow.setX(70);
+            Ti.UI.currentWindow.setY(Ti.platform == "win32"? 0 : 25);
+        })();
+
+    </script>
+</head>
+<body>
+<h1>SCIEG - Lab Retriever</h1>
+
+<div class="column">
+    <div><label data-type="editable" data-for=".input1">Case ID</label>
+         <input class="input1 hidden" value="Case ID"/></div>
+    <div><label data-type="editable" data-for=".input2">Sample ID</label>
+         <input class="input2 hidden" value="Sample ID"/></div>
+    <div><label data-type="editable" data-for=".input3">Analyst</label>
+         <input class="input3 hidden" value="Analyst"/> </div>
+
+    <label style="visibility: hidden;">Suspected Contributors:</label><br/>
+    <select id="suspect_contributors">
+        <option># Suspected Contributors</option>
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+    </select>
+
+    <div class="separator"></div>
+
+    <h5>Parameters</h5>
+    <ul>
+        <li>alpha <input type="text" name="alpha" class="half" value="0.5"/></li>
+        <li>P(DI) <input type="text" name="pdi" class="half" value="0.01"/></li>
+        <li>P(DO) <table>
+            <tr><td>P(DO) 1</td><td>P(DO) 2</td><td>P(DO) 3</td></tr>
+            <tr>
+                <td><input type="text" name="PDO1" class="quarter" value="0.01"/></td>
+                <td><input type="text" name="PDO2" class="quarter" value="0.1"/></td>
+                <td><input type="text" name="PDO3" class="quarter" value="0.5"/></td>
+            </tr>
+        </table></li>
+        <li>Race <select name="race">
+            <option>All</option>
+            <option>Caucasian</option>
+            <option>African</option>
+            <option>Asian</option>
+        </select></li>
+    </ul>
+
+    <div class="separator"></div>
+
+    <h5 id="idb_probabilities">IDB Probabilities</h5>
+    <ul>
+        <li>0 Alleles <select name="alleles0"><option>0</option><option>1</option></select></li>
+        <li>1 Alleles <select name="alleles1"><option>0</option><option>1</option></select></li>
+        <li>2 Alleles <select name="alleles2"><option>0</option><option>1</option></select></li>
+    </ul>
+
+    <div class="separator"></div>
+
+    <h5>Likelihood Ratio</h5>
+
+    <ul>
+        <li>H1 <select name="likelihood1">
+            <option>1 S, 0 UNK</option>
+            <option>1 S, 1 UNK</option>
+            <option>1 S, 2 UNK</option>
+            <option>2 S, 0 UNK</option>
+            <option>2 S, 1 UNK</option>
+            <option>3 S, 0 UNK</option>
+        </select></li>
+
+        <li>H2 <select name="likelihood2">
+            <option>0 S, 1 UNK</option>
+            <option>0 S, 2 UNK</option>
+            <option>0 S, 3 UNK</option>
+            <option>1 S, 0 UNK</option>
+            <option>1 S, 1 UNK</option>
+            <option>1 S, 2 UNK</option>
+            <option>2 S, 0 UNK</option>
+            <option>2 S, 1 UNK</option>
+            <option>3 S, 0 UNK</option>
+        </select></li>
+    </ul>
+
+</div>
+
+<div id="RUN_STATUS">
+    <div>
+        <input type="text" id="what"/> <input type="submit" onclick="SCIEG.Process.runProcess($('#what').val());"/>
+    </div>
+    <div id="running" class="output"></div>
+    <div id="status" class="output"></div>
+</div>
+
+<script src="js/jquery-latest.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.editable-1.0.1.js"></script>
+<script src="js/process.js"></script>
+<script>
+    $().ready(function(){
+        $('body').editables({
+            beforeFreeze: function(l){l.text(this.val());}
+        });
+
+        $('input[class^="input"]').on("keydown", function(evt){
+            if (evt.which == 9) {
+                var m = this.className.match(/([^\d]*)(\d+)/);
+                var inputLocator = "." + m[1] + (parseInt(m[2]) + 1);
+                var s = $("label[data-for='" + inputLocator + "']");
+                setTimeout(function(){s.click();}, 10);
+            }
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+.hidden { display: none; }
+
+input.half { width: 100px; }
+input.quarter { width: 50px; }
