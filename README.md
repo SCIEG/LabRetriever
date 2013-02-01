@@ -9,6 +9,8 @@ Linux (coming soon)
 
 # Building it yourself
 
+This is for developers who want to make additions or fixes to the project.
+
 ## Prerequisites
 
 [make](http://www.gnu.org/software/make/)
@@ -19,8 +21,6 @@ Linux (coming soon)
 
 
 ## Building / Running
-
-This is for developers who want to make additions or fixes to the project.
 
 Compile the labr program:
 
