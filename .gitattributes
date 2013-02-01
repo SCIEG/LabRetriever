@@ -1,0 +1,6 @@
+*        text=auto
+
+*.cpp    text diff=cpp
+*.html   text diff=html
+*.css    text
+*.js     text
