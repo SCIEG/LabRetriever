@@ -1,7 +1,7 @@
 
 # Downloads
 
-[Mac](https://raw.github.com/SCIEG/LabRetriever/master/downloads/LabRetriever-1.0-ALPHA.dmg)
+[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.0-ALPHA.dmg)
 
 Windows (coming soon)
 
