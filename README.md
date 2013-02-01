@@ -12,7 +12,9 @@ Linux (coming soon)
 ## Prerequisites
 
 [make](http://www.gnu.org/software/make/)
+
 [gcc](http://gcc.gnu.org/)
+
 [TideSDK](http://www.tidesdk.org/) - Both the latest SDK version AND the TideSDK Developer.
 
 
