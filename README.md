@@ -2,7 +2,9 @@
 # Downloads
 
 [Mac](https://raw.github.com/SCIEG/LabRetriever/master/downloads/LabRetriever-1.0-ALPHA.dmg)
+
 Windows (coming soon)
+
 Linux (coming soon)
 
 # Building it yourself
