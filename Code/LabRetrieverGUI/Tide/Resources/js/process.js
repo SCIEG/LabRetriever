@@ -10,18 +10,16 @@ SCIEG.Process.runProcess = function(val) {
         alert('process already running: ' + self._myStatus);
         return;
     }
-    self._running.html("");
     self._myproc = Ti.Process.createProcess({
-        args:val.split(' ')
+        args:val
     });
-    self._myStatus = "running: " + val;
-    $('#running').html(self._myStatus);
+    self._myStatus = "running: " + val.join(' ');
+    log(self._myStatus);
     var moreCmd = Ti.platform === "win32" ? ["C:\\Windows\\System32\\more.com"] : ["cat"];
     var more = Ti.Process.createProcess(moreCmd);
 
     more.setOnReadLine(function(data) {
-        var s = $('#status');
-        s.html(s.html() + "<br/>" + data.toString());
+        log(s.html() + "<br/>" + data.toString());
     });
 
     self._myproc.stdout.attach(more.stdin);
@@ -30,26 +28,16 @@ SCIEG.Process.runProcess = function(val) {
     self.running = true;
     self.interval = setInterval(self._checkStatus, 300);
 }
-SCIEG.Process._myStatusDot = " ."
-SCIEG.Process._running = $('#running');
 SCIEG.Process._checkStatus = function() {
     try {
     var self = SCIEG.Process;
-    if (self._myproc.isRunning()) {
-        self._running.html(self._myStatus + self._myStatusDot);
-        if (self._myStatusDot.length == 5) {
-            self._myStatusDot = " .";
-        } else {
-            self._myStatusDot += ".";
-        }
-    } else {
-        self._running.html(self._myStatus + " ... Done.");
+    if (!self._myproc.isRunning()) {
+        log(" ... Done.");
         self.running = false;
         clearInterval(self.interval);
     }
     } catch(e) {
-        alert('exception: ' + e.toString());
-        alert(document.body.innerHTML);
+        log('exception checking status: ' + e.toString());
         clearInterval(self.interval);
     }
 }

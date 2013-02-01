@@ -2,25 +2,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/scieg.css" rel="stylesheet" media="screen">
     <style>
-        .output {
-            background-color: white;
-            margin: 15px;
-        }
-        #running {
-            border-color: green;
-            border-width: 3px;
-        }
-        input[type='text'] {
-            margin:0;
-            padding:0;
-        }
-        body {
-            padding:10px;
-        }
+
     </style>
     <script>
         (function() {
-            Ti.UI.currentWindow.setHeight(800);
+            Ti.UI.currentWindow.setHeight(850);
             Ti.UI.currentWindow.setWidth(1200);
             Ti.UI.currentWindow.setX(70);
             Ti.UI.currentWindow.setY(Ti.platform == "win32"? 0 : 25);
@@ -29,54 +15,51 @@
     </script>
 </head>
 <body>
-<h1>SCIEG - Lab Retriever</h1>
+<a href="#" onclick="Ti.App.restart()" style="position: absolute;right:5px;">restart</a>
+<h1><img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/> Lab Retriever</h1>
 
 <div class="column">
-    <div><label data-type="editable" data-for=".input1">Case ID</label>
-         <input class="input1 hidden" value="Case ID"/></div>
-    <div><label data-type="editable" data-for=".input2">Sample ID</label>
-         <input class="input2 hidden" value="Sample ID"/></div>
-    <div><label data-type="editable" data-for=".input3">Analyst</label>
-         <input class="input3 hidden" value="Analyst"/> </div>
-
-    <label style="visibility: hidden;">Suspected Contributors:</label><br/>
-    <select id="suspect_contributors">
-        <option># Suspected Contributors</option>
+    <div><label for="caseInput">Case ID</label>
+         <input id="caseInput" value=""/></div>
+    <div><label for="sampleInput">Sample ID</label>
+         <input id="sampleInput" value=""/></div>
+    <div><label for="analystInput">Analyst</label>
+         <input id="analystInput" value=""/> </div>
+    <br/>
+    <!--label style="display:inline">Suspected Contributors:</label>
+    <select disabled id="suspect_contributors">
         <option>0</option>
         <option>1</option>
         <option>2</option>
         <option>3</option>
-    </select>
+    </select -->
 
     <div class="separator"></div>
 
     <h5>Parameters</h5>
     <ul>
-        <li>alpha <input type="text" name="alpha" class="half" value="0.5"/></li>
-        <li>P(DI) <input type="text" name="pdi" class="half" value="0.01"/></li>
-        <li>P(DO) <table>
-            <tr><td>P(DO) 1</td><td>P(DO) 2</td><td>P(DO) 3</td></tr>
-            <tr>
-                <td><input type="text" name="PDO1" class="quarter" value="0.01"/></td>
-                <td><input type="text" name="PDO2" class="quarter" value="0.1"/></td>
-                <td><input type="text" name="PDO3" class="quarter" value="0.5"/></td>
-            </tr>
-        </table></li>
-        <li>Race <select name="race">
-            <option>All</option>
-            <option>Caucasian</option>
-            <option>African</option>
-            <option>Asian</option>
+        <!--  Enable only for 'Dev' builds
+        <li>alpha <input type="text" id="alpha" class="half" value="0.5"/></li>
+        -->
+        <input type="hidden" id="alpha" class="half" value="0.5"/>
+
+        <li>P(DI) <input type="text" id="pdi" class="half" value="0.01"/></li>
+        <li>P(DO) <input type="text" name="pdo" class="quarter" value=""/></li>
+        <li><a href="#" id="addDO" onclick="addAnotherDO(event)">add another DO <img src="img/plus.png"/></a></li>
+        <li>Race <select id="race">
+            <option value="AFRICAN_AMERICAN">African</option>
+            <option value="CAUCASIAN">Caucasian</option>
+            <option value="HISPANIC">Hispanic</option>
         </select></li>
     </ul>
 
     <div class="separator"></div>
 
-    <h5 id="idb_probabilities">IDB Probabilities</h5>
+    <h5 id="ibd_probabilities">IBD Probabilities</h5>
     <ul>
-        <li>0 Alleles <select name="alleles0"><option>0</option><option>1</option></select></li>
-        <li>1 Alleles <select name="alleles1"><option>0</option><option>1</option></select></li>
-        <li>2 Alleles <select name="alleles2"><option>0</option><option>1</option></select></li>
+        <li>0 Alleles <input type="text" id="alleles0" class="quarter" value="1"/></li>
+        <li>1 Alleles <input type="text" id="alleles1" class="quarter" value="0"/></li>
+        <li>2 Alleles <input type="text" id="alleles2" class="quarter" value="0"/></li>
     </ul>
 
     <div class="separator"></div>
@@ -84,54 +67,200 @@
     <h5>Likelihood Ratio</h5>
 
     <ul>
-        <li>H1 <select name="likelihood1">
-            <option>1 S, 0 UNK</option>
-            <option>1 S, 1 UNK</option>
-            <option>1 S, 2 UNK</option>
-            <option>2 S, 0 UNK</option>
-            <option>2 S, 1 UNK</option>
-            <option>3 S, 0 UNK</option>
+        <li>H1 <select id="likelihood1">
+            <option value="10">1 S, 0 UNK</option>
+            <option value="11">1 S, 1 UNK</option>
+            <option value="12">1 S, 2 UNK</option>
+            <!--option value="20">2 S, 0 UNK</option>
+            <option value="21">2 S, 1 UNK</option>
+            <option value="30">3 S, 0 UNK</option-->
         </select></li>
 
-        <li>H2 <select name="likelihood2">
-            <option>0 S, 1 UNK</option>
-            <option>0 S, 2 UNK</option>
-            <option>0 S, 3 UNK</option>
-            <option>1 S, 0 UNK</option>
-            <option>1 S, 1 UNK</option>
-            <option>1 S, 2 UNK</option>
-            <option>2 S, 0 UNK</option>
-            <option>2 S, 1 UNK</option>
-            <option>3 S, 0 UNK</option>
+        <li>H2 <select id="likelihood2">
+            <option value="01">0 S, 1 UNK</option>
+            <option value="02">0 S, 2 UNK</option>
+            <option value="03">0 S, 3 UNK</option>
+            <option value="10">1 S, 0 UNK</option>
+            <option value="11">1 S, 1 UNK</option>
+            <option value="12">1 S, 2 UNK</option>
+            <!--option value="20">2 S, 0 UNK</option>
+            <option value="21">2 S, 1 UNK</option>
+            <option value="30">3 S, 0 UNK</option-->
         </select></li>
     </ul>
 
 </div>
 
-<div id="RUN_STATUS">
-    <div>
-        <input type="text" id="what"/> <input type="submit" onclick="SCIEG.Process.runProcess($('#what').val());"/>
-    </div>
+<div id="inputFile">
+    <span class="button" id="loadFile">Load a file</span>
+    <span class="button"  id="runner">RUN!</span>
     <div id="running" class="output"></div>
     <div id="status" class="output"></div>
 </div>
 
+<div id="locusTable">
+    <table>
+        <tr class="names">
+            <td class="col1"></td>
+            <td>Assumed</td>
+            <td>Suspected</td>
+            <td>Evidence /<br/>Detected</td>
+            <td>Unattributed</td>
+        </tr>
+        <tr class="header">
+            <td class="col1"></td>
+            <td class="addSample"></td>
+            <td class="addSample"></td>
+            <td class="addSample"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="col1"></td>
+        </tr>
+        <tr id="D8">
+            <td class="col1">D8</td>
+        </tr>
+        <tr id="D21">
+            <td class="col1">D21</td>
+        </tr>
+        <tr id="D7">
+            <td class="col1">D7</td>
+        </tr>
+        <tr id="CSF">
+            <td class="col1">CSF</td>
+        </tr>
+        <tr id="D3">
+            <td class="col1">D3</td>
+        </tr>
+        <tr id="TH01">
+            <td class="col1">TH01</td>
+        </tr>
+        <tr id="D13">
+            <td class="col1">D13</td>
+        </tr>
+        <tr id="D16">
+            <td class="col1">D16</td>
+        </tr>
+        <tr id="D2">
+            <td class="col1">D2</td>
+        </tr>
+        <tr id="D19">
+            <td class="col1">D19</td>
+        </tr>
+        <tr id="vWA">
+            <td class="col1">vWA</td>
+        </tr>
+        <tr id="TPO">
+            <td class="col1">TPO</td>
+        </tr>
+        <tr id="D18">
+            <td class="col1">D18</td>
+        </tr>
+        <tr id="D5">
+            <td class="col1">D5</td>
+        </tr>
+        <tr id="FGA">
+            <td class="col1">FGA</td>
+        </tr>
+    </table>
+
+</div>
+
+<div id="sampleSelector" class="hidden"></div>
+<div id="overlay" class="hidden" onclick="removeOverlay()"></div>
+<div id="results" class="hidden"></div>
+
 <script src="js/jquery-latest.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.editable-1.0.1.js"></script>
+<!--script src="js/jquery.editable-1.0.1.js"></script -->
+<script src="js/logger.js"></script>
 <script src="js/process.js"></script>
+<script src="js/displayData.js"></script>
+<script type="text/python" src="py/input_parser.py"></script>
+<script src="js/exporter.js"></script>
 <script>
     $().ready(function(){
-        $('body').editables({
-            beforeFreeze: function(l){l.text(this.val());}
+
+        $('#runner').click(function(){
+            try {
+                var files = SCIEG.exporter.createLabRcsv();
+            } catch (e) {
+                log("creating csv failed: " + e.toString());
+                files = [];
+            }
+            SCIEG.currentResults = [];
+            var executable = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDirectory(), "labr").nativePath();
+            try {
+                for (var i=0; i < files.length; i++) {
+                    var outputName = "output" + i + ".csv";
+                    var process = [executable, files[i],
+                        Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName).nativePath(),
+                        $("#likelihood1").val(), $("#likelihood2").val()];
+                    //log("run: " + process);
+                    SCIEG.Process.runProcess(process);
+                    SCIEG.resultsInterval = setInterval(function(){
+                        var f = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName);
+                        if (f.exists()) {
+                            var results = f.read();
+                            SCIEG.currentResults.push(results);
+                            $('#results').html("<table><tr><td>" +
+                                    results.split(",").join("</td><td>").split("\n").join("</td></tr><tr><td>") +
+                                    "</td></tr></table><div><span class='button'>save</span></div>").removeClass("hidden");
+                            $('#overlay').removeClass("hidden");
+                            clearInterval(SCIEG.resultsInterval);
+                            $('#results span.button').click(function(){
+                                Ti.UI.currentWindow.openSaveAsDialog(function(paths){
+                                            f.copy(paths[0]);
+                                        },
+                                        {      title: 'Lab Retriever results',
+                                            multiple: false,
+                                         defaultFile: $('#caseInput').val() + '_results.csv'})
+                            })
+                        } else {
+                            log("file does not exist: " + outputName);
+                        }
+                    }, 100);
+
+                }
+            } catch (e) {
+                log(e.toString());
+            }
         });
 
-        $('input[class^="input"]').on("keydown", function(evt){
-            if (evt.which == 9) {
-                var m = this.className.match(/([^\d]*)(\d+)/);
-                var inputLocator = "." + m[1] + (parseInt(m[2]) + 1);
-                var s = $("label[data-for='" + inputLocator + "']");
-                setTimeout(function(){s.click();}, 10);
+        $('#loadFile').click(function(){
+            try {
+            Ti.UI.currentWindow.openFileChooserDialog(function(names){
+                try {
+                    if (names.length == 0) return; // user hit cancel
+                    var n = names[0];
+                    if (n.length == 0) {
+                        return;
+                    }
+                    var f = Ti.Filesystem.getFile(n);
+                    if (f.exists()) {
+                        SCIEG.fileData = window.load(f.nativePath());
+                        if (SCIEG.fileData) {
+                            fileLoaded();
+                            calculateUnattributed();
+                            $('.loadFile').html('load another file');
+                            return;
+                        }
+
+                    }
+                } catch(e) { log("Caught Error: " + e.toString());}
+            }, {multiple:false});
+            } catch(e) { log('file chooser error' + e.toString()); }
+        });
+        var checkFile = function(){
+
+        };
+
+        $("#ibd_probabilities").click(function(evt) {
+            var ul = $(evt.target).next();
+            if (ul.height()) {
+                ul.animate({height:0}, 1000);
+            } else {
+                ul.animate({height:ul[0].scrollHeight}, 1000);
             }
         });
     })

@@ -11,7 +11,7 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
     double dropoutRate = 0.05;
     Race race = AFRICAN_AMERICAN;
     IdenticalByDescentProbability identicalByDescentProbability(1, 0, 0);
-    map<string, vector<string> > locusToSuspectAlleles;
+    map<string, set<string> > locusToSuspectAlleles;
     map<string, set<string> > locusToAssumedAlleles;
     map<string, vector<set<string> > > locusToUnattributedAlleles;
 
@@ -22,43 +22,9 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
         if (row.size() == 0) continue;
 
         const string& header = row[0];
-        unsigned int index;
+
         // Hack way to detect input type.
-        if ((index = header.find("-Assumed")) != string::npos) {
-            string locus = header.substr(0, index);
-            set<string> assumedAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    assumedAlleles.insert(data);
-                }
-            }
-            locusToAssumedAlleles[locus] = assumedAlleles;
-        } else if ((index = header.find("-Unattributed")) != string::npos) {
-            string locus = header.substr(0, index);
-            set<string> unattribAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    unattribAlleles.insert(data);
-                }
-            }
-
-            locusToUnattributedAlleles[locus].push_back(unattribAlleles);
-        } else if ((index = header.find("-Suspected")) != string::npos) {
-            string locus = header.substr(0, index);
-            vector<string> suspectAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    suspectAlleles.push_back(data);
-                }
-            }
-            // If there are no suspected alleles, then there's no point of calculating this.
-            if (suspectAlleles.size() == 0) continue;
-
-            locusToSuspectAlleles[locus] = suspectAlleles;
-        } else if (header == "alpha") {
+        if (header == "alpha") {
             if (row.size() <= 1) continue;
             double value = atof(row[1].c_str());
             if (value != 0) {
@@ -85,13 +51,33 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
             identicalByDescentProbability.zeroAllelesInCommonProb = atof(row[1].c_str());
             identicalByDescentProbability.oneAlleleInCommonProb = atof(row[2].c_str());
             identicalByDescentProbability.bothAllelesInCommonProb = atof(row[3].c_str());
+        } else {
+            unsigned int index = header.find("-");
+            string locus = header.substr(0, index);
+            string locusType = header.substr(index+1, header.size());
+            set<string> alleles;
+            for (unsigned int i = 1; i < row.size(); i++) {
+                string data = row[i];
+                if (data.length() != 0) {
+                    alleles.insert(data);
+                }
+            }
+            if (locusType == "Assumed") {
+                locusToAssumedAlleles[locus] = alleles;
+            } else if (locusType == "Unattributed") {
+                locusToUnattributedAlleles[locus].push_back(alleles);
+            } else if (locusType == "Suspected") {
+                // If there are no suspected alleles, then there's no point of calculating this.
+                if (alleles.size() == 0) continue;
+                locusToSuspectAlleles[locus] = alleles;
+            }
         }
     }
 
     // TODO: check for known loci and alleles.
     // I think this todo is done.
     set<string> lociToCheck;
-    for (map<string, vector<string> >::const_iterator iter = locusToSuspectAlleles.begin();
+    for (map<string, set<string> >::const_iterator iter = locusToSuspectAlleles.begin();
             iter != locusToSuspectAlleles.end(); iter++) {
         const string& locus = iter->first;
         if (locusToAssumedAlleles.find(locus) != locusToAssumedAlleles.end() &&
@@ -107,7 +93,7 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
 
         vector<set<string> > unattributedAlleles = locusToUnattributedAlleles[locus];
         set<string> assumedAlleles = locusToAssumedAlleles[locus];
-        vector<string> suspectAlleles = locusToSuspectAlleles[locus];
+        set<string> suspectAlleles = locusToSuspectAlleles[locus];
 
         set<string> allAlleles;
         allAlleles.insert(assumedAlleles.begin(), assumedAlleles.end());
@@ -119,8 +105,8 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
         AlleleProfile suspectProfile;
         vector<ReplicateData> replicateDatas;
 
-        for (unsigned int i = 0; i < suspectAlleles.size(); i++) {
-            suspectProfile.addAllele(suspectAlleles[i]);
+        for (set<string>::const_iterator p = suspectAlleles.begin( );p != suspectAlleles.end( ); ++p) {
+            suspectProfile.addAllele(*p);
         }
         for (unsigned int unattribIndex = 0; unattribIndex < unattributedAlleles.size();
                 unattribIndex++) {
@@ -205,7 +191,6 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
     logProbStream << endl;
     regProbStream << endl;
 
-
     for (unsigned int i = 0; i < likelihoodSolvers.size(); i++) {
         map<string, double> locusToLogProb_i = solverIndexToLocusLogProb[i];
         for (unsigned int j = i + 1; j < likelihoodSolvers.size(); j++) {
@@ -247,8 +232,11 @@ int main(int argc, char *argv[]) {
     vector<LikelihoodSolver*> solversToUse;
 
     if (argc < 2) {
-        std::cout << "Usage is <inputfile> <outputfile> [<[01][0123]>, ...]\nexample: lr input.csv output.csv 01 02 03 10 11 12";
-        return;
+        std::cout << "Usage is <inputfile> <outputfile> [<[01][0123]>, ...]\n";
+        std::cout << "first digit is number of suspects, second is number of unknowns.\n";
+        std::cout << "\nexample: for no suspect, one unknown and one suspect, one unknown\n";
+        std::cout << argv[0] << " input.csv output.csv 01 11\n\n";
+        return -1;
     }
     if (argc > 2) {
         for (int i = 3; i < argc; i++) {
