@@ -1,7 +1,7 @@
 
 # Downloads
 
-Mac (coming very very very soon)
+[Mac](https://raw.github.com/SCIEG/LabRetriever/master/downloads/LabRetriever-1.0-ALPHA.dmg)
 Windows (coming soon)
 Linux (coming soon)
 
@@ -26,6 +26,8 @@ Compile the labr program:
     make
 
 Import the Tide project (src/Tide) in TideSDK Developer.
+
+Click "Test & Package" tab
 
 Click "Launch App"
 
