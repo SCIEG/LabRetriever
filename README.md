@@ -7,16 +7,14 @@ Linux (coming soon)
 
 # Building it yourself
 
-Prerequisites
-~~~~~~~~~~~~~
+## Prerequisites
 
 [make](http://www.gnu.org/software/make/)
 [gcc](http://gcc.gnu.org/)
 [TideSDK](http://www.tidesdk.org/) - Both the latest SDK version AND the TideSDK Developer.
 
 
-Building / Running
-~~~~~~~~~~~~~~~~~~
+## Building / Running
 
 This is for developers who want to make additions or fixes to the project.
 
