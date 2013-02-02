@@ -238,8 +238,10 @@
                     }
                     var f = Ti.Filesystem.getFile(n);
                     if (f.exists()) {
-                        SCIEG.fileData = window.load(f.nativePath());
-                        if (SCIEG.fileData) {
+                        if (SCIEG.fileData == undefined) SCIEG.fileData = [];
+                        var data = window.load(f.nativePath());
+                        if (data) {
+                            SCIEG.fileData = SCIEG.fileData.concat(data.splice(0));
                             fileLoaded();
                             calculateUnattributed();
                             $('.loadFile').html('load another file');
