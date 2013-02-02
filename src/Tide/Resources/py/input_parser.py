@@ -1,7 +1,7 @@
 
 import csv
 
-VALID_LOCII = ["D8","D21","D7","CSF","D3","THO","D13","D16","D2","D19","vWA","TPO","D18","D5","FGA"]
+VALID_LOCII = ["D8","D21","D7","CSF","D3","TH0","D13","D16","D2","D19","vWA","TPO","D18","D5","FGA"]
 
 def locusName(name):
     if (name.startswith('D')):
@@ -10,6 +10,8 @@ def locusName(name):
         return 'CSF'
     if (name.startswith('TPO')):
         return 'TPO'
+    if (name.startswith('TH0')):
+        return 'TH0'
     return name
 
 def getKeys(csv):
