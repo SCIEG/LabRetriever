@@ -214,7 +214,8 @@
                                         },
                                         {      title: 'Lab Retriever results',
                                             multiple: false,
-                                         defaultFile: $('#caseInput').val() + '_results.csv'})
+                                               types: ['csv'],
+                                         defaultName: $('#caseInput').val() + '_results.csv'})
                             })
                         } else {
                             log("file does not exist: " + outputName);
