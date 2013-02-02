@@ -27,6 +27,7 @@ SCIEG.exporter.createLabRcsv = function() {
         for (var locus in SCIEG.selectedSamples[3][0]) {
             if (locus == 'name') continue;
             var evidence = SCIEG.selectedSamples[3][0][locus].slice(0);
+            if (evidence.length == 0) continue;
             var unattributed = evidence.slice(0);
             var assumed = [];
             if (SCIEG.selectedSamples[1].length) {
