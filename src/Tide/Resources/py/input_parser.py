@@ -46,22 +46,22 @@ def load(file):
     data = {}
     ordered = []
     for r in csvr:
-        locus = locusName(r[keys['locus']])
+        locus = locusName(r[keys['locus']].strip())
         if locus not in VALID_LOCII:
             continue
         als = []
         for x in keys['call']:
             if x >= len(r):
                 continue
-            call = r[x]
+            call = r[x].strip()
             if len(call):
                 als.append(call)
             else:
                 break
-
-        data.setdefault(r[keys['name']], {})[locus] = als
-        if len(ordered) == 0 or ordered[-1] != r[keys['name']]:
-            ordered.append(r[keys['name']])
+        name = r[keys['name']].strip()
+        data.setdefault(name, {})[locus] = als
+        if len(ordered) == 0 or ordered[-1] != name:
+            ordered.append(name)
     fileData = []
     for keyName in ordered:
         d = data.get(keyName)
