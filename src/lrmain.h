@@ -16,7 +16,13 @@
 using namespace std;
 using namespace LabRetriever;
 
-vector<double> run(const string& inputFileName, const string& outputFileName,
+void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>& likelihoodSolvers,
+        const map<Race, vector<map<string, double> > >& raceToSolverIndexToLocusLogProb,
+        const map<Race, vector<double> >& raceToSolverIndexToLogProb,
+        const vector<Race> races,
+        const string& outputFileName);
+
+map<Race, vector<double> > run(const string& inputFileName, const string& outputFileName,
         vector<LikelihoodSolver*> likelihoodSolvers);
 
 
