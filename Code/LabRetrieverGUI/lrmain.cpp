@@ -93,7 +93,7 @@ map<Race, vector<double> > run(const string& inputFileName, const string& output
     // These are defaults; if specified, will be in the input file.
     double alpha = 0.5;
     double dropinRate = 0.01;
-    double dropoutRate = 0.05;
+    double dropoutRate = 0.01;
     Race race = ALL;
     IdenticalByDescentProbability identicalByDescentProbability(1, 0, 0);
     map<string, vector<string> > locusToSuspectAlleles;
@@ -141,6 +141,11 @@ map<Race, vector<double> > run(const string& inputFileName, const string& output
             }
             // If there are no suspected alleles, then there's no point of calculating this.
             if (suspectAlleles.size() == 0) continue;
+
+            // If there is only a single allele, then double it.
+            if (suspectAlleles.size() == 1) {
+                suspectAlleles.push_back(suspectAlleles[0]);
+            }
 
             locusToSuspectAlleles[locus] = suspectAlleles;
         } else if (header == "alpha") {
