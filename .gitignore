@@ -1,3 +1,11 @@
 .DS_STORE
 *.exe
+*.o
 *.app
+labr
+
+.idea/
+*.iml
+
+src/Tide/labr.dSYM/
+src/Tide/packages/

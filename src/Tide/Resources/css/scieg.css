@@ -1,0 +1,63 @@
+.hidden { display: none; }
+
+input.half { width: 100px; }
+input.quarter { width: 50px; }
+
+ul { list-style-type: none; }
+
+div.column { width: 200px; float:left; margin-right: 25px;}
+div.column ul { margin-left: 10px; }
+div.column li { clear: both; }
+div.column li input,
+div.column li select { float: right; }
+div.column select { width: auto; }
+
+h5 { clear: both; }
+
+.output {
+    background-color: white;
+    margin: 15px;
+}
+#running {
+    border-color: green;
+    border-width: 3px;
+}
+input[type='text'] {
+    padding:0;
+}
+body {
+    padding:10px;
+}
+
+div.line { border:1px solid }
+
+#ibd_probabilities { cursor: pointer; }
+
+#ibd_probabilities + ul { height: 0; overflow: hidden; }
+
+#inputFile label { display: inline; }
+#inputFile.valid input { background-color: #62c462;}
+#inputFile.error input { background-color: #d59392;}
+.button { background-color: #C0C0C0; color:black; border-radius: 6px; padding: 5px; cursor: pointer; font-weight: bold; }
+
+#runner { margin-left: 400px; }
+
+#locusTable { display:inline-block; margin:20px 0; position:absolute; left:230px;}
+#locusTable td { padding: 5px; width: 100px; border: 1px dotted #C0C0C0; }
+#locusTable td.col1 { width:35px; }
+#locusTable tr.names td { padding: 10px; }
+
+#sampleSelector { position: absolute; border: solid 1px; z-index: 6; background-color: white; padding: 6px; }
+#sampleSelector li { cursor: pointer; }
+#sampleSelector li:hover { background-color: #C0C0C0; }
+
+
+#addDO { display:block; margin-bottom: 10px;}
+input[name='pdo'] { margin-bottom: 3px; }
+
+#overlay { width:100%; height:100%; top:0; left:0; position: absolute; opacity: 0.8; color: white; z-index: 5;}
+
+.removeSample { background-color: white; position: absolute; z-index: 4; color: #D00; border: 1px #D00 solid; cursor: pointer}
+
+#results { overflow:auto; position: absolute; width: 1100px; height:600px; border: 1px solid black; padding: 20px; z-index: 6; background-color: white; top: 125px; }
+#results table td { border: 1px dotted #C0C0C0; padding: 3px; }
