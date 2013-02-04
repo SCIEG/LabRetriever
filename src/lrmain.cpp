@@ -1,7 +1,7 @@
 #include "lrmain.h"
 #include "utils/DebugUtil.h"
 
-vector<double> run(const string& inputFileName, const string& outputFileName,
+vector<double> run(const string& executablePath, const string& inputFileName, const string& outputFileName,
         vector<LikelihoodSolver*> likelihoodSolvers) {
     vector<double> solverIndexToLogProb(likelihoodSolvers.size(), 0);
     vector<map<string, double> > solverIndexToLocusLogProb(likelihoodSolvers.size());
@@ -115,7 +115,7 @@ vector<double> run(const string& inputFileName, const string& outputFileName,
         }
 
         map<string, unsigned int> alleleCounts =
-                getAlleleCountsFromFile("Allele Frequency Tables/" + locus + "_B.count.csv", race);
+                getAlleleCountsFromFile(executablePath + "Allele Frequency Tables/" + locus + "_B.count.csv", race);
 
         // Edit the allele counts so that every allele is given at least 5 counts, even if the
         // allele does not appear in the table.
@@ -268,5 +268,6 @@ int main(int argc, char *argv[]) {
         solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_ONE_UNKNOWN));
     }
 
-    run(argv[1], argv[2], solversToUse);
+    string executablePath = string(argv[0]);
+    run(executablePath.substr(0, executablePath.length() - 4), argv[1], argv[2], solversToUse);
 }

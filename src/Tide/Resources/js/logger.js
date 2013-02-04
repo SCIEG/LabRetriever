@@ -17,6 +17,8 @@ file = null;
 
 function log(msg) {
     if (userProperties.getString('debug') == 'true') {
-        $("#status").append(msg).append('<br/>');
+        var s = $("#status");
+        s.removeClass("hidden");
+        s.val(s.val() + msg + '\n');
     }
 }
