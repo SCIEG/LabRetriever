@@ -87,7 +87,7 @@ void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>&
     myFileStream.close();
 }
 
-map<Race, vector<double> > run(const string& inputFileName, const string& outputFileName,
+map<Race, vector<double> > run(const string& executablePath, const string& inputFileName, const string& outputFileName,
         vector<LikelihoodSolver*> likelihoodSolvers) {
     // These are defaults; if specified, will be in the input file.
     double alpha = 0.5;
@@ -243,7 +243,7 @@ map<Race, vector<double> > run(const string& inputFileName, const string& output
         }
 
         map<Race, map<string, unsigned int> > raceToAlleleCounts =
-                getAlleleCountsFromFile("Allele Frequency Tables/" + locus + "_B.count.csv",
+                getAlleleCountsFromFile(executablePath + "Allele Frequency Tables/" + locus + "_B.count.csv",
                         races);
 
         for (unsigned int raceIndex = 0; raceIndex < races.size(); raceIndex++) {
