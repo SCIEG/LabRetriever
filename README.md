@@ -1,7 +1,7 @@
 
 # Downloads
 
-[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.3-ALPHA.dmg)
+[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.4-ALPHA.dmg)
 
 Windows (coming soon)
 

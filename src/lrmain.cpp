@@ -95,7 +95,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     double dropoutRate = 0.01;
     Race race = ALL;
     IdenticalByDescentProbability identicalByDescentProbability(1, 0, 0);
-    map<string, vector<string> > locusToSuspectAlleles;
+    map<string, set<string> > locusToSuspectAlleles;
     map<string, set<string> > locusToAssumedAlleles;
     map<string, vector<set<string> > > locusToUnattributedAlleles;
 
@@ -106,48 +106,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
         if (row.size() == 0) continue;
 
         const string& header = row[0];
-        unsigned int index;
-        // Hack way to detect input type.
-        if ((index = header.find("-Assumed")) != string::npos) {
-            string locus = header.substr(0, index);
-            set<string> assumedAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    assumedAlleles.insert(data);
-                }
-            }
-            locusToAssumedAlleles[locus] = assumedAlleles;
-        } else if ((index = header.find("-Unattributed")) != string::npos) {
-            string locus = header.substr(0, index);
-            set<string> unattribAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    unattribAlleles.insert(data);
-                }
-            }
-
-            locusToUnattributedAlleles[locus].push_back(unattribAlleles);
-        } else if ((index = header.find("-Suspected")) != string::npos) {
-            string locus = header.substr(0, index);
-            vector<string> suspectAlleles;
-            for (unsigned int i = 1; i < row.size(); i++) {
-                string data = row[i];
-                if (data.length() != 0) {
-                    suspectAlleles.push_back(data);
-                }
-            }
-            // If there are no suspected alleles, then there's no point of calculating this.
-            if (suspectAlleles.size() == 0) continue;
-
-            // If there is only a single allele, then double it.
-            if (suspectAlleles.size() == 1) {
-                suspectAlleles.push_back(suspectAlleles[0]);
-            }
-
-            locusToSuspectAlleles[locus] = suspectAlleles;
-        } else if (header == "alpha") {
+        if (header == "alpha") {
             if (row.size() <= 1) continue;
             double value = atof(row[1].c_str());
             if (value != 0) {
@@ -176,6 +135,27 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
             identicalByDescentProbability.zeroAllelesInCommonProb = atof(row[1].c_str());
             identicalByDescentProbability.oneAlleleInCommonProb = atof(row[2].c_str());
             identicalByDescentProbability.bothAllelesInCommonProb = atof(row[3].c_str());
+        } else {
+            unsigned int index = header.find("-");
+            if (index == -1) continue;
+            string locus = header.substr(0, index);
+            string locusType = header.substr(index+1, header.size());
+            set<string> alleles;
+            for (unsigned int i = 1; i < row.size(); i++) {
+                string data = row[i];
+                if (data.length() != 0) {
+                    alleles.insert(data);
+                }
+            }
+            if (locusType == "Assumed") {
+                locusToAssumedAlleles[locus] = alleles;
+            } else if (locusType == "Unattributed") {
+                locusToUnattributedAlleles[locus].push_back(alleles);
+            } else if (locusType == "Suspected") {
+                // If there are no suspected alleles, then there's no point of calculating this.
+                if (alleles.size() == 0) continue;
+                locusToSuspectAlleles[locus] = alleles;
+            }
         }
     }
 
@@ -205,7 +185,8 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     // TODO: check for known loci and alleles.
     // I think this todo is done.
     set<string> lociToCheck;
-    for (map<string, vector<string> >::const_iterator iter = locusToSuspectAlleles.begin();
+    cout << "lociToCheck size: " << lociToCheck.size() << endl;
+    for (map<string, set<string> >::const_iterator iter = locusToSuspectAlleles.begin();
             iter != locusToSuspectAlleles.end(); iter++) {
         const string& locus = iter->first;
         if (locusToAssumedAlleles.find(locus) != locusToAssumedAlleles.end() &&
@@ -221,7 +202,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
 
         vector<set<string> > unattributedAlleles = locusToUnattributedAlleles[locus];
         set<string> assumedAlleles = locusToAssumedAlleles[locus];
-        vector<string> suspectAlleles = locusToSuspectAlleles[locus];
+        set<string> suspectAlleles = locusToSuspectAlleles[locus];
 
         set<string> allAlleles;
         allAlleles.insert(assumedAlleles.begin(), assumedAlleles.end());
@@ -233,8 +214,8 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
         AlleleProfile suspectProfile;
         vector<ReplicateData> replicateDatas;
 
-        for (unsigned int i = 0; i < suspectAlleles.size(); i++) {
-            suspectProfile.addAllele(suspectAlleles[i]);
+        for (set<string>::const_iterator p = suspectAlleles.begin( );p != suspectAlleles.end( ); ++p) {
+            suspectProfile.addAllele(*p);
         }
         for (unsigned int unattribIndex = 0; unattribIndex < unattributedAlleles.size();
                 unattribIndex++) {
