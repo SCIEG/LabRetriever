@@ -19,7 +19,7 @@ SCIEG.Process.runProcess = function(val) {
     var more = Ti.Process.createProcess(moreCmd);
 
     more.setOnReadLine(function(data) {
-        log(s.html() + "<br/>" + data.toString());
+        log("data: " + data.toString());
     });
 
     self._myproc.stdout.attach(more.stdin);
