@@ -6,7 +6,7 @@
 <version>1.0.5-ALPHA</version>
 <publisher>SCIEG</publisher>
 <url>https://github.com/SCIEG/LabRetriever</url>
-<icon>default_app_logo.png</icon>
+<icon>lab_retriever_icon.png</icon>
 <copyright>2013 by SCIEG</copyright>
 <!-- Window Definition - these values can be edited -->
 <window>
