@@ -15,7 +15,7 @@
     </script>
 </head>
 <body>
-<a href="#" onclick="Ti.App.restart()" style="position: absolute;right:5px;">restart</a>
+<a href="#" onclick="Ti.App.restart()" class='close'>restart</a>
 <h1><img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/> Lab Retriever</h1>
 
 <div class="column">
@@ -103,17 +103,17 @@
     <table>
         <tr class="names">
             <td class="col1"></td>
+            <td>Detected</td>
+            <td>Unattributed</td>
             <td>Assumed</td>
             <td>Suspected</td>
-            <td>Evidence /<br/>Detected</td>
-            <td>Unattributed</td>
         </tr>
         <tr class="header">
             <td class="col1"></td>
             <td class="addSample"></td>
-            <td class="addSample"></td>
-            <td class="addSample"></td>
             <td></td>
+            <td class="addSample"></td>
+            <td class="addSample"></td>
         </tr>
         <tr>
             <td class="col1"></td>
@@ -175,6 +175,7 @@
 <script src="js/bootstrap.min.js"></script>
 <!--script src="js/jquery.editable-1.0.1.js"></script -->
 <script src="js/logger.js"></script>
+<script src="js/date.js"></script>
 <script src="js/process.js"></script>
 <script src="js/displayData.js"></script>
 <script type="text/python" src="py/input_parser.py"></script>
@@ -198,30 +199,55 @@
                         Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName).nativePath(),
                         $("#likelihood1").val(), $("#likelihood2").val()];
                     //log("run: " + process);
+                    // delete output file before running, as to not pick up previous run's results
+                    var outFile = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName);
+                    if (outFile.exists()) {
+                        var d = outFile.deleteFile();
+                        if (!d) {
+                            alert("Failed to delete the output file prior to run.\n" +
+                                  d + "\n" +
+                                  "Please delete this file before attempting another run:\n " +
+                                    outFile.nativePath());
+                            return;
+                        }
+                    }
                     SCIEG.Process.runProcess(process);
+                    SCIEG.resultsFoundTries = 0;
                     SCIEG.resultsInterval = setInterval(function(){
                         var f = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName);
                         if (f.exists()) {
+                            clearInterval(SCIEG.resultsInterval);
                             var results = f.read();
                             SCIEG.currentResults.push(results);
-                            $('#results').html("<table><tr><td>" +
+                            $('#results').html("<div><span class='button'>save</span><span class='close'>X</span>"+
+                                    "</div><br/><table><tr><td>" +
                                     results.split(",").join("</td><td>").split("\n").join("</td></tr><tr><td>") +
-                                    "</td></tr></table><div><span class='button'>save</span></div>").removeClass("hidden");
+                                    "</td></tr></table>").removeClass("hidden");
                             $('#overlay').removeClass("hidden");
-                            clearInterval(SCIEG.resultsInterval);
                             $('#results span.button').click(function(){
+                                var pdo = [];
+                                $("input[name='pdo']").each(function(i,v){pdo.push(v.value);});
                                 Ti.UI.currentWindow.openSaveAsDialog(function(paths){
                                             f.copy(paths[0]);
                                         },
                                         {      title: 'Lab Retriever results',
                                             multiple: false,
                                                types: ['csv'],
-                                         defaultName: $('#caseInput').val() + '_results.csv'})
-                            })
+                                         defaultName: getISODate() + " " +
+                                                 SCIEG.selectedSamples['detected'][0]['name'] + " " +
+                                                 $("#likelihood1").val().split("").join("S-") + "UNK " +
+                                                 $("#likelihood2").val().split("").join("S-") + "UNK " +
+                                                 pdo.join(' ') + '.csv'})
+                            });
+                            $('#results span.close').click(removeOverlay);
                         } else {
+                            if (SCIEG.resultsFoundTries++ > 3000) {
+                                clearInterval(SCIEG.resultsInterval);
+                                log("giving up looking for results")
+                            }
                             log("file does not exist: " + outputName);
                         }
-                    }, 100);
+                    }, 250);
 
                 }
             } catch (e) {
@@ -255,9 +281,6 @@
             }, {multiple:false});
             } catch(e) { log('file chooser error' + e.toString()); }
         });
-        var checkFile = function(){
-
-        };
 
         $("#ibd_probabilities").click(function(evt) {
             var ul = $(evt.target).next();

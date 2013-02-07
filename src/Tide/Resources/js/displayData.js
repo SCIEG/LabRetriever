@@ -7,6 +7,9 @@ function copy(obj, depth) {
     } return newObj;
 };
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 function displayData() {
     var addedColumn = 0;
@@ -14,16 +17,16 @@ function displayData() {
         var samples = SCIEG.selectedSamples[SCIEG.activeColumn];
         var row = $(value);
         var cols = row.find('td');
-        var colIdx = SCIEG.activeColumn + samples.length - 1;
-        for (var i = SCIEG.activeColumn - 1; i > 0; i--) {
-            colIdx += Math.max(0, SCIEG.selectedSamples[i].length - 1);
+        var colIdx = SCIEG.colMap[SCIEG.activeColumn] + samples.length - 1;
+        if (SCIEG.activeColumn == 'suspected') {
+            colIdx += Math.max(0, SCIEG.selectedSamples['assumed'].length - 1);
         }
 
         if (idx < 2) {
             if (samples.length > 1) {
                 var html = "<td></td>";
                 if (idx == 0) {
-                    html = "<td>" + (SCIEG.activeColumn == 1? 'Assumed': 'Suspected') + "</td>";
+                    html = "<td>" + SCIEG.activeColumn.capitalize() + "</td>";
                 }
                 $(cols[colIdx-1]).after(html);
                 addedColumn = 1;
@@ -61,9 +64,9 @@ function calculateUnattributed() {
         cols = addColumns(cols, maxcols);
         if (idx < 3) return;
 
-        var all = (SCIEG.selectedSamples[3].length && (value.id in SCIEG.selectedSamples[3][0])) ?
-            copy(SCIEG.selectedSamples[3][0][value.id], 1) : [];
-        $.each(SCIEG.selectedSamples[1], function(i, v){
+        var all = (SCIEG.selectedSamples['detected'].length && (value.id in SCIEG.selectedSamples['detected'][0])) ?
+            copy(SCIEG.selectedSamples['detected'][0][value.id], 1) : [];
+        $.each(SCIEG.selectedSamples['assumed'], function(i, v){
             if (!(value.id in v)) return;
             $.each(v[value.id], function(ii, vv){
                 if (all.indexOf(vv) != -1) {
@@ -71,7 +74,7 @@ function calculateUnattributed() {
                 }
             });
         })
-        $(cols[maxcols - 1]).html(all.join(" "));
+        $(cols[2]).html(all.join(" "));
     });
 }
 
@@ -105,39 +108,25 @@ function removeSample(el) {
         col += 1;
         cell = cell.prev();
     }
+    var sampleCol = col;
+    if (sampleCol > 3) {
+        sampleCol -= Math.max(SCIEG.selectedSamples[SCIEG.colMap[3]].length - 1, 0);
+        if (sampleCol > 4) sampleCol = 4;
+    }
 
-    var idx = SCIEG.selectedSamples[1].length || 1;
-    if (col <= idx) {
-        removeColumn(col, SCIEG.selectedSamples[1].length == 1 || col == 1, SCIEG.selectedSamples[1].length > 1);
-        var sample = SCIEG.selectedSamples[1].pop();
-        SCIEG.usedSamples.splice(SCIEG.usedSamples.indexOf(sample['name']), 1);
-        // Assumed, need to recalculate unattributed
-        calculateUnattributed();
-        updateSampleSelect()
-        return;
-    }
-    idx += SCIEG.selectedSamples[2].length || 1;
-    if (col <= idx) {
-        removeColumn(col, SCIEG.selectedSamples[2].length == 1 || col == Math.max(1, SCIEG.selectedSamples[1].length) + 1,
-            SCIEG.selectedSamples[2].length > 1);
-        var sample = SCIEG.selectedSamples[2].pop();
-        SCIEG.usedSamples.splice(SCIEG.usedSamples.indexOf(sample['name']), 1);
-        updateSampleSelect();
-        return;
-    }
-    idx += 1;
-    if (col <= idx) {
-        try {
+    if (SCIEG.colMap[sampleCol] == 'detected') {
         removeColumn(col, true, false);
-        var sample = SCIEG.selectedSamples[3].pop();
-        SCIEG.usedSamples.splice(SCIEG.usedSamples.indexOf(sample['name']), 1);
         // show the + icon again
         $($('#locusTable .addSample')[2]).css('visibility', 'visible');
-        calculateUnattributed();
-        updateSampleSelect();
-        } catch(e){log('removal exception: ' + e.toString())}
-        return;
+    } else {
+        removeColumn(col, SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].length <= 1,
+            SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].length > 1);
     }
+
+    var sample = SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].pop();
+    SCIEG.usedSamples.splice(SCIEG.usedSamples.indexOf(sample['name']), 1);
+    if (SCIEG.colMap[sampleCol] != 'suspected') calculateUnattributed();
+    updateSampleSelect();
 }
 
 function removeColumn(idx, keepHeader, shiftCells) {
@@ -166,13 +155,18 @@ function removeColumn(idx, keepHeader, shiftCells) {
 
 SCIEG.usedSamples = [];
 SCIEG.selectedSamples = {
-    // assumed
-    1: [],
-    // suspected
-    2: [],
-    // evidence
-    3: []
-}
+    'assumed': [],
+    'suspected': [],
+    'detected': []
+};
+SCIEG.colMap = {
+    3: 'assumed',
+    'assumed': 3,
+    4: 'suspected',
+    'suspected': 4,
+    1: 'detected',
+    'detected': 1
+};
 SCIEG.activeColumn = 0;
 
 function selectFile() {
@@ -186,8 +180,8 @@ function selectFile() {
             SCIEG.selectedSamples[SCIEG.activeColumn].push(SCIEG.fileData[i]);
             displayData();
             calculateUnattributed();
-            if (SCIEG.activeColumn == 3) {
-                $($('#locusTable .addSample')[2]).css('visibility', 'hidden');
+            if (SCIEG.activeColumn == 'detected') {
+                $($('#locusTable .addSample')[0]).css('visibility', 'hidden');
             }
             break;
         }
@@ -215,9 +209,9 @@ function chooseSample(el) {
         col += 1;
         cell = cell.prev();
     }
-    if (col > 1) col -= Math.max(SCIEG.selectedSamples[1].length - 1, 0);
-    if (col > 2) col -= Math.max(SCIEG.selectedSamples[2].length - 1, 0);
-    SCIEG.activeColumn = col;
+    if (col > 3) col -= Math.max(SCIEG.selectedSamples[SCIEG.colMap[3]].length - 1, 0);
+    if (col > 4) col = 4;
+    SCIEG.activeColumn = SCIEG.colMap[col];
   } catch (e) { log("chooseSample exception: " + e.toString());}
 }
 

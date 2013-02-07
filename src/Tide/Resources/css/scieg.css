@@ -63,3 +63,5 @@ input[name='pdo'] { margin-bottom: 3px; }
 #results table td { border: 1px dotted #C0C0C0; padding: 3px; }
 
 #status { width: 600px; height:300px; }
+
+.close { background-color: #888; padding:6px; border-radius: 15px; }

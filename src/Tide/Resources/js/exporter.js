@@ -6,7 +6,7 @@ SCIEG.exporter = {};
  */
 SCIEG.exporter.createLabRcsv = function() {
 
-    if (SCIEG.selectedSamples[3].length == 0 || SCIEG.selectedSamples[2].length == 0) {
+    if (SCIEG.selectedSamples['detected'].length == 0 || SCIEG.selectedSamples['suspected'].length == 0) {
         alert("You need to specify at least one Evidence sample and one Suspect sample");
         return [];
     }
@@ -24,16 +24,16 @@ SCIEG.exporter.createLabRcsv = function() {
         self.writeLine("IBD Probs," + $('#alleles0').val() + ',' + $('#alleles1').val() + ',' + $('#alleles2').val());
         self.writeLine("Race," + $('#race').val());
 
-        for (var locus in SCIEG.selectedSamples[3][0]) {
+        for (var locus in SCIEG.selectedSamples['detected'][0]) {
             if (locus == 'name') continue;
-            var evidence = SCIEG.selectedSamples[3][0][locus].slice(0);
+            var evidence = SCIEG.selectedSamples['detected'][0][locus].slice(0);
             if (evidence.length == 0) continue;
             var unattributed = evidence.slice(0);
             var assumed = [];
-            if (SCIEG.selectedSamples[1].length) {
-                for (var i = 0; i < SCIEG.selectedSamples[1].length; i++) {
-                    for (var k = 0; k < SCIEG.selectedSamples[1][i][locus].length; k++) {
-                        var l = SCIEG.selectedSamples[1][i][locus][k];
+            if (SCIEG.selectedSamples['assumed'].length) {
+                for (var i = 0; i < SCIEG.selectedSamples['assumed'].length; i++) {
+                    for (var k = 0; k < SCIEG.selectedSamples['assumed'][i][locus].length; k++) {
+                        var l = SCIEG.selectedSamples['assumed'][i][locus][k];
                         if (unattributed.indexOf(l) != -1) {
                             unattributed.splice(unattributed.indexOf(l), 1);
                         }
@@ -46,10 +46,10 @@ SCIEG.exporter.createLabRcsv = function() {
             assumed.sort(SCIEG.exporter.sorter);
             self.writeLine(locus + "-Assumed," + assumed.join(','));
 
-            for (var j = 0; j < SCIEG.selectedSamples[2].length; j++) {
+            for (var j = 0; j < SCIEG.selectedSamples['suspected'].length; j++) {
                 var suspects = [];
-                for (var m = 0; m < SCIEG.selectedSamples[2][j][locus].length; m++) {
-                    var n = SCIEG.selectedSamples[2][j][locus][m];
+                for (var m = 0; m < SCIEG.selectedSamples['suspected'][j][locus].length; m++) {
+                    var n = SCIEG.selectedSamples['suspected'][j][locus][m];
                     if (suspects.indexOf(n) == -1) {
                         suspects.push(n);
                     }

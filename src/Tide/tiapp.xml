@@ -3,8 +3,8 @@
 <!-- These values are edited/maintained by TideSDK Developer -->
 <id>org.scieg</id>
 <name>LabRetriever</name>
-<version>1.0.4-ALPHA</version>
-<publisher>linman-semerau</publisher>
+<version>1.0.5-ALPHA</version>
+<publisher>SCIEG</publisher>
 <url>https://github.com/SCIEG/LabRetriever</url>
 <icon>default_app_logo.png</icon>
 <copyright>2013 by SCIEG</copyright>
