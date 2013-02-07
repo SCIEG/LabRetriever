@@ -185,7 +185,6 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     // TODO: check for known loci and alleles.
     // I think this todo is done.
     set<string> lociToCheck;
-    cout << "lociToCheck size: " << lociToCheck.size() << endl;
     for (map<string, set<string> >::const_iterator iter = locusToSuspectAlleles.begin();
             iter != locusToSuspectAlleles.end(); iter++) {
         const string& locus = iter->first;
@@ -304,5 +303,12 @@ int main(int argc, char *argv[]) {
     }
 
     string executablePath = string(argv[0]);
-    run(executablePath.substr(0, executablePath.length() - 4), argv[1], argv[2], solversToUse);
+
+    // The executable file name is 'labr' but on windows is 'labr.exe'
+    int fileNameLength = 4;
+    if (executablePath.find(".exe") != -1) {
+        fileNameLength += 4;
+    }
+
+    run(executablePath.substr(0, executablePath.length() - fileNameLength), argv[1], argv[2], solversToUse);
 }
