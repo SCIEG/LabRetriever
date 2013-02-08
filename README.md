@@ -19,11 +19,11 @@ This is for developers who want to make additions or fixes to the project.
 
 [gcc](http://gcc.gnu.org/)
 
-On windows use cygwin to install make/gcc but use a regular 'cmd' shell to compile.
+On windows use MinGW to install make/gcc (put MinGW on your path and run mingw32-make instead of just 'make' below).
 
 [TideSDK](http://www.tidesdk.org/) - Both the latest SDK version AND the TideSDK Developer.
 
-[Instructions on installing / setting up TideSDK](http://tidesdk.multipart.net/docs/user-dev/generated/#!/guide/getting_started)
+[Instructions on installing / setting up TideSDK](http://tidesdk.multipart.net/docs/user-dev/generated/#!/guide/getting_started) - which is especially important to read for Windows.
 
 
 ## Building / Running
