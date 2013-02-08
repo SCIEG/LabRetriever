@@ -34,7 +34,7 @@ function displayData() {
             return;
         }
 
-        cols = addColumns(cols, colIdx + 1);
+        cols = addColumns(cols, colIdx);
 
         if (addedColumn) {
             $(cols[colIdx-1]).after("<td></td>");
@@ -43,14 +43,14 @@ function displayData() {
 
         var sample = samples[samples.length - 1];
         var display = idx == 2 ? sample['name'] :
-            (value.id in sample)? sample[value.id].join(' ') : '';
+            (value.id in sample)? sample[value.id].join('&nbsp;') : '';
 
         $(cols[colIdx]).html(display);
         if (idx == 2) {
             $(cols[colIdx]).addClass("sampleName");
+            $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
         }
 
-        $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
     });
 }
 
@@ -117,9 +117,11 @@ function removeSample(el) {
     if (SCIEG.colMap[sampleCol] == 'detected') {
         removeColumn(col, true, false);
         // show the + icon again
-        $($('#locusTable .addSample')[2]).css('visibility', 'visible');
+        $($('#locusTable .addSample')[0]).css('visibility', 'visible');
     } else {
-        removeColumn(col, SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].length <= 1,
+        var onHeaderColumn = sampleCol == col ||
+            (sampleCol == 4 && col == 3 + SCIEG.selectedSamples[SCIEG.colMap[3]].length);
+        removeColumn(col, onHeaderColumn,
             SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].length > 1);
     }
 
@@ -237,6 +239,8 @@ function fileLoaded() {
     });
     updateSampleSelect();
     $('#loadFile').html("Load another file");
+    $('#runner').removeClass('hidden');
+    SCIEG.util.tempStatus('file loaded.');
 }
 
 function addAnotherDO(e) {

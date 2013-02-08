@@ -94,7 +94,7 @@
 
 <div id="inputFile">
     <span class="button" id="loadFile">Load a file</span>
-    <span class="button"  id="runner">RUN!</span>
+    <span class="button hidden"  id="runner">RUN!</span>
     <div id="running" class="output"></div>
     <textarea id="status" class="output hidden"></textarea>
 </div>
@@ -170,10 +170,12 @@
 <div id="sampleSelector" class="hidden"></div>
 <div id="overlay" class="hidden" onclick="removeOverlay()"></div>
 <div id="results" class="hidden"></div>
+<div id="busy" class="hidden"></div>
 
 <script src="js/jquery-latest.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <!--script src="js/jquery.editable-1.0.1.js"></script -->
+<script src="js/util.js"></script>
 <script src="js/logger.js"></script>
 <script src="js/date.js"></script>
 <script src="js/process.js"></script>
@@ -184,6 +186,7 @@
     $().ready(function(){
 
         $('#runner').click(function(){
+            var b = SCIEG.util.busy();
             try {
                 var files = SCIEG.exporter.createLabRcsv();
             } catch (e) {
@@ -240,10 +243,14 @@
                                                  pdo.join(' ') + '.csv'})
                             });
                             $('#results span.close').click(removeOverlay);
+                            b();
                         } else {
                             if (SCIEG.resultsFoundTries++ > 3000) {
                                 clearInterval(SCIEG.resultsInterval);
-                                log("giving up looking for results")
+                                log("giving up looking for results");
+                                SCIEG.util.status("Calculation took too long, it may have died? Try again.");
+                                b();
+                                SCIEG.Process.kill();
                             }
                             log("file does not exist: " + outputName);
                         }
@@ -252,6 +259,7 @@
                 }
             } catch (e) {
                 log(e.toString());
+                b();
             }
         });
 
@@ -259,6 +267,7 @@
             try {
             Ti.UI.currentWindow.openFileChooserDialog(function(names){
                 try {
+                    var b = SCIEG.util.busy();
                     if (names.length == 0) return; // user hit cancel
                     var n = names[0];
                     if (n.length == 0) {
@@ -273,11 +282,13 @@
                             fileLoaded();
                             calculateUnattributed();
                             $('.loadFile').html('load another file');
+                            b();
                             return;
                         }
 
                     }
-                } catch(e) { log("Caught Error: " + e.toString());}
+                    b();
+                } catch(e) { log("Caught Error: " + e.toString()); b();}
             }, {multiple:false});
             } catch(e) { log('file chooser error' + e.toString()); }
         });

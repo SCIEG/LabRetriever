@@ -41,3 +41,9 @@ SCIEG.Process._checkStatus = function() {
         clearInterval(self.interval);
     }
 }
+
+SCIEG.Process.kill = function() {
+    self.running = false;
+    clearInterval(self.interval);
+    SCIEG.Process._myproc.kill();
+}
