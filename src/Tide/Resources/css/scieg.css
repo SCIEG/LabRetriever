@@ -45,7 +45,7 @@ div.line { border:1px solid }
 #locusTable td.col1 { width:35px; }
 #locusTable tr.names td { padding: 10px; }
 
-#sampleSelector { position: absolute; border: solid 1px; z-index: 6; background-color: white; padding: 6px; }
+#sampleSelector { position: absolute; border: solid 1px; z-index: 6; background-color: white; padding: 6px; max-width: 525px;}
 #sampleSelector li { cursor: pointer; }
 #sampleSelector li:hover { background-color: #C0C0C0; }
 

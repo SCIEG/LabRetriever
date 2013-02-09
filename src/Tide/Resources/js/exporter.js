@@ -50,11 +50,9 @@ SCIEG.exporter.createLabRcsv = function() {
                 var suspects = [];
                 for (var m = 0; m < SCIEG.selectedSamples['suspected'][j][locus].length; m++) {
                     var n = SCIEG.selectedSamples['suspected'][j][locus][m];
-                    if (suspects.indexOf(n) == -1) {
-                        suspects.push(n);
-                    }
+                    suspects.push(n);
                 }
-                suspects.sort(SCIEG.exporter.sorter);
+                //suspects.sort(SCIEG.exporter.sorter);
                 self.writeLine(locus + "-Suspected," + suspects.join(','));
             }
             unattributed.sort(SCIEG.exporter.sorter);

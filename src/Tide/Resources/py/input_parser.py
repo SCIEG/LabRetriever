@@ -1,7 +1,7 @@
 
-import csv
+import csv, os
 
-VALID_LOCII = ["D8","D21","D7","CSF","D3","TH0","D13","D16","D2","D19","vWA","TPO","D18","D5","FGA"]
+VALID_LOCII = ["D8","D21","D7","CSF","D3","TH0","D13","D16","D2","D19","VWA","TPO","D18","D5","FGA"]
 
 def locusName(name):
     if (name.startswith('D')):
@@ -10,7 +10,7 @@ def locusName(name):
         return 'CSF'
     if (name.startswith('TPO')):
         return 'TPO'
-    if (name.startswith('TH0')):
+    if (name.startswith('TH0') or name.startswith('THO')):
         return 'TH0'
     return name
 
@@ -20,7 +20,9 @@ def getKeys(csv):
     for i in csv.next():
         idx += 1
         i = i.lower()
-        if "sample" in i:
+        if "file" in i:
+            keys['file'] = idx
+        elif "sample" in i:
             keys['name'] = idx
         elif "locus" in i or 'marker' in i:
             keys['locus'] = idx
@@ -42,13 +44,16 @@ def load(file):
     """
     global VALID_LOCII
     csvr = csv.reader(open(file).read().splitlines())
+    if file.endswith('.csv'):
+        file = file[0:-4]
+    file = os.path.basename(file);
     keys = getKeys(csvr)
     if not keys:
         return None
     data = {}
     ordered = []
     for r in csvr:
-        locus = locusName(r[keys['locus']].strip())
+        locus = locusName(r[keys['locus']].strip().upper())
         if locus not in VALID_LOCII:
             continue
         als = []
@@ -61,6 +66,10 @@ def load(file):
             else:
                 break
         name = r[keys['name']].strip()
+        if keys.has_key('file') and len(r) > keys['file']:
+            name = r[keys['file']] + " | " + name
+        else:
+            name = file + " | " + name
         data.setdefault(name, {})[locus] = als
         if len(ordered) == 0 or ordered[-1] != name:
             ordered.append(name)
