@@ -240,7 +240,7 @@ function fileLoaded() {
     updateSampleSelect();
     $('#loadFile').html("Load another file");
     $('#runner').removeClass('hidden');
-    SCIEG.util.tempStatus('file loaded.');
+    SCIEG.util.status('file loaded.');
 }
 
 function addAnotherDO(e) {

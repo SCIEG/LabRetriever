@@ -10,14 +10,7 @@ SCIEG.util.busy = function() {
     }
 }
 
-SCIEG.util.tempStatus = function(msg) {
-    $('#running').html(msg);
-    setTimeout(function(){$('#running').fadeOut(2000, function(){
-        var r = $('#running');
-        if (r.html() == msg) r.html('');
-    })}, 2000);
-}
-
 SCIEG.util.status = function(msg) {
-    $('#running').html(msg);
+    $('#running').html(msg).css('opacity', 1);
+    setTimeout(function(){$('#running').animate({'opacity':0.4}, 2000);}, 2000);
 }
