@@ -21,7 +21,7 @@
 using namespace std;
 
 namespace LabRetriever {
-    const string trim(const std::string& pString, const std::string& pWhitespace = " \t\n") {
+    const string trim(const std::string& pString, const std::string& pWhitespace = " \t\r\n") {
         const size_t beginStr = pString.find_first_not_of(pWhitespace);
         if (beginStr == std::string::npos)
         {
