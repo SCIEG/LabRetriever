@@ -15,24 +15,32 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
+#include <functional>
+#include <cctype>
+#include <locale>
 
 #include <boost/tokenizer.hpp>
 
 using namespace std;
 
 namespace LabRetriever {
-    const string trim(const std::string& pString, const std::string& pWhitespace = " \t\r\n") {
-        const size_t beginStr = pString.find_first_not_of(pWhitespace);
-        if (beginStr == std::string::npos)
-        {
-            // no content
-            return "";
-        }
 
-        const size_t endStr = pString.find_last_not_of(pWhitespace);
-        const size_t range = endStr - beginStr + 1;
+    // trim from start
+    static inline string &ltrim(string &s) {
+            s.erase(s.begin(), find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace))));
+            return s;
+    }
 
-        return pString.substr(beginStr, range);
+    // trim from end
+    static inline std::string &rtrim(std::string &s) {
+            s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
+            return s;
+    }
+
+    // trim from both ends
+    static inline std::string &trim(std::string &s) {
+            return ltrim(rtrim(s));
     }
 
     Race raceFromString(const string& name) {

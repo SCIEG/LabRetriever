@@ -95,7 +95,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     double dropoutRate = 0.01;
     Race race = ALL;
     IdenticalByDescentProbability identicalByDescentProbability(1, 0, 0);
-    map<string, set<string> > locusToSuspectAlleles;
+    map<string, vector<string> > locusToSuspectAlleles;
     map<string, set<string> > locusToAssumedAlleles;
     map<string, vector<set<string> > > locusToUnattributedAlleles;
 
@@ -140,17 +140,19 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
             if (index == -1) continue;
             string locus = header.substr(0, index);
             string locusType = header.substr(index+1, header.size());
-            set<string> alleles;
+            set<string> alleleSet;
+            vector<string> alleles;
             for (unsigned int i = 1; i < row.size(); i++) {
                 string data = row[i];
                 if (data.length() != 0) {
-                    alleles.insert(data);
+                    alleles.push_back(data);
+                    alleleSet.insert(data);
                 }
             }
             if (locusType == "Assumed") {
-                locusToAssumedAlleles[locus] = alleles;
+                locusToAssumedAlleles[locus] = alleleSet;
             } else if (locusType == "Unattributed") {
-                locusToUnattributedAlleles[locus].push_back(alleles);
+                locusToUnattributedAlleles[locus].push_back(alleleSet);
             } else if (locusType == "Suspected") {
                 // If there are no suspected alleles, then there's no point of calculating this.
                 if (alleles.size() == 0) continue;
@@ -185,7 +187,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     // TODO: check for known loci and alleles.
     // I think this todo is done.
     set<string> lociToCheck;
-    for (map<string, set<string> >::const_iterator iter = locusToSuspectAlleles.begin();
+    for (map<string, vector<string> >::const_iterator iter = locusToSuspectAlleles.begin();
             iter != locusToSuspectAlleles.end(); iter++) {
         const string& locus = iter->first;
         if (locusToAssumedAlleles.find(locus) != locusToAssumedAlleles.end() &&
@@ -201,7 +203,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
 
         vector<set<string> > unattributedAlleles = locusToUnattributedAlleles[locus];
         set<string> assumedAlleles = locusToAssumedAlleles[locus];
-        set<string> suspectAlleles = locusToSuspectAlleles[locus];
+        vector<string> suspectAlleles = locusToSuspectAlleles[locus];
 
         set<string> allAlleles;
         allAlleles.insert(assumedAlleles.begin(), assumedAlleles.end());
@@ -213,8 +215,8 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
         AlleleProfile suspectProfile;
         vector<ReplicateData> replicateDatas;
 
-        for (set<string>::const_iterator p = suspectAlleles.begin( );p != suspectAlleles.end( ); ++p) {
-            suspectProfile.addAllele(*p);
+        for (unsigned int i = 0; i < suspectAlleles.size(); i++) {
+            suspectProfile.addAllele(suspectAlleles[i]);
         }
         for (unsigned int unattribIndex = 0; unattribIndex < unattributedAlleles.size();
                 unattribIndex++) {
