@@ -1,11 +1,11 @@
 
 # Downloads
 
-Currently 1.0.7 ALPHA release
+Currently 1.0.8 ALPHA release
 
-[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.7.dmg)
+[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.8.dmg)
 
-[Windows](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.7.msi)
+[Windows](http://lab-retriever.googlecode.com/files/LabRetriever-1.0.8.msi)
 
 Linux (coming maybe? soon)
 
