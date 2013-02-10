@@ -44,7 +44,8 @@ SCIEG.exporter.createLabRcsv = function() {
                 }
             }
             assumed.sort(SCIEG.exporter.sorter);
-            self.writeLine(locus + "-Assumed," + assumed.join(','));
+            var locusName = (locus == 'VWA'?'vWA':locus)
+            self.writeLine(locusName + "-Assumed," + assumed.join(','));
 
             for (var j = 0; j < SCIEG.selectedSamples['suspected'].length; j++) {
                 var suspects = [];
@@ -53,10 +54,10 @@ SCIEG.exporter.createLabRcsv = function() {
                     suspects.push(n);
                 }
                 //suspects.sort(SCIEG.exporter.sorter);
-                self.writeLine(locus + "-Suspected," + suspects.join(','));
+                self.writeLine(locusName + "-Suspected," + suspects.join(','));
             }
             unattributed.sort(SCIEG.exporter.sorter);
-            self.writeLine(locus + "-Unattributed," + unattributed.join(','));
+            self.writeLine(locusName + "-Unattributed," + unattributed.join(','));
         }
         self._out.close();
     });
