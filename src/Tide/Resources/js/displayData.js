@@ -42,15 +42,20 @@ function displayData() {
         }
 
         var sample = samples[samples.length - 1];
-        var display = idx == 2 ? sample['name'] :
-            (value.id in sample)? sample[value.id].join('&nbsp;') : '';
-
-        $(cols[colIdx]).html(display);
         if (idx == 2) {
-            $(cols[colIdx]).addClass("sampleName");
-            $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
-        }
+            var sampleNameId = 'editable' + sample['name'].replace(/ /g, '').replace(/\|/g, '');
+            var display = '<span data-type="editable" data-for="#' + sampleNameId + '">' +
+                sample['name'] + '</span><input type="text" style="display:none;" id="' + sampleNameId + '"/>';
 
+            $(cols[colIdx]).html(display).addClass("sampleName").editables({
+                beforeFreeze: function(l){if (this.val()) l.text(this.val());},
+                beforeEdit: function(t){t.val(this.text());hideRemove.call(this.parent());}
+            });
+            $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
+        } else {
+            var display = (value.id in sample)? sample[value.id].join('&nbsp;') : '';
+            $(cols[colIdx]).html(display);
+        }
     });
 }
 
@@ -89,11 +94,13 @@ function showRemove(evt) {
     var el = $(this);
     var rm = el.find('.removeSample');
     if (rm.length == 0) {
-        rm = el.append('<div class="removeSample hidden" onclick="removeSample(this)">remove</div>');
+        el.append('<div class="removeSample" onclick="removeSample(this)">remove</div>');
         var pos = el.position();
-        rm.css({'top': pos.top + (el.height() / 2), 'left': pos.left + (el.width() / 2)});
+        rm = el.find('.removeSample');
+        rm.css({'top': pos.top /* + (el.height() / 2)*/, 'left': pos.left + el.width()});
     } else {
-        rm.removeClass('hidden');
+        if (el.find('input').css('display') == 'none')
+            rm.removeClass('hidden');
     }
 }
 
@@ -114,10 +121,10 @@ function removeSample(el) {
         if (sampleCol > 4) sampleCol = 4;
     }
 
-    if (SCIEG.colMap[sampleCol] == 'detected') {
+    if (SCIEG.colMap[sampleCol] == 'detected' || SCIEG.colMap[sampleCol] == 'suspected') {
         removeColumn(col, true, false);
         // show the + icon again
-        $($('#locusTable .addSample')[0]).css('visibility', 'visible');
+        $($('#locusTable .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'visible');
     } else {
         var onHeaderColumn = sampleCol == col ||
             (sampleCol == 4 && col == 3 + SCIEG.selectedSamples[SCIEG.colMap[3]].length);
@@ -182,8 +189,8 @@ function selectFile() {
             SCIEG.selectedSamples[SCIEG.activeColumn].push(SCIEG.fileData[i]);
             displayData();
             calculateUnattributed();
-            if (SCIEG.activeColumn == 'detected') {
-                $($('#locusTable .addSample')[0]).css('visibility', 'hidden');
+            if (SCIEG.activeColumn == 'detected' || SCIEG.activeColumn == 'suspected') {
+                $($('#locusTable .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'hidden');
             }
             break;
         }
