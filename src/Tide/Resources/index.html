@@ -1,4 +1,4 @@
-<html><head>
+<html xmlns="http://www.w3.org/1999/html"><head>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/scieg.css" rel="stylesheet" media="screen">
     <style>
@@ -15,8 +15,11 @@
     </script>
 </head>
 <body>
-<a href="#" onclick="Ti.App.restart()" class='close'>restart</a>
-<h1><img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/> Lab Retriever</h1>
+<!--a href="#" onclick="Ti.App.restart()" class='close'>restart</a-->
+<h1 style="position: relative;">
+    <img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/>
+    <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:0; height:100px"/>
+</h1>
 
 <div class="column">
     <div><label for="caseInput">Case ID</label>
@@ -172,6 +175,39 @@
 <div id="results" class="hidden"></div>
 <div id="busy" class="hidden"></div>
 
+
+<div id="splash">
+    <h1 style="position: relative;">
+        <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:25; top:-10; height:100px"/>
+        <span id="programName">Lab Retriever</span><br/>
+    </h1>
+
+    <h2>A Program to Calculate LRs with Drop-out</h2>
+
+    <h3>
+    Conceived by:
+        <ul>
+            <li>Keith Inman</li>
+            <li>Kirk Lohmueller</li>
+            <li>Norah Rudin</li>
+        </ul>
+    Executed by:
+    <ul>
+        <li>Ken Cheng</li>
+        <li>Luke Inman-Semerau</li>
+    </ul>
+    </h3>
+    <h4>
+    A <img alt="SCIEG" src="img/SCIEG_logo.png" width="100"/> Productions Development
+    </h4>
+    <p>Funded in part by a CAC McLaughlin Fund Grant</p>
+    <p>Following Balding, DJ, and Buckleton, J. Interpreting low template DNA profiles, FSI:Genetics 4 (2009)
+        <!--br/>
+        For the most recent updates by Dr. Balding, <a href="http://drbalding.com">please click here</a -->
+        </p>
+    <p>For research use only</p>
+</div>
+
 <script src="js/jquery-latest.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.editable-1.0.1.js"></script>
@@ -184,6 +220,8 @@
 <script src="js/exporter.js"></script>
 <script>
     $().ready(function(){
+        setTimeout(function(){$("#splash").fadeOut(1500, function(){$('#splash').hide()})}, 5000);
+
         $('#runner').click(function(){
             var b = SCIEG.util.busy();
             try {
