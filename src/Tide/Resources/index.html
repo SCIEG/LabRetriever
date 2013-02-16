@@ -368,7 +368,7 @@
                                             multiple: false,
                                                types: ['csv'],
                                          defaultName: getISODate() + " " +
-                                                 SCIEG.selectedSamples['detected'][0]['name'] + " " +
+                                                 SCIEG.selectedSamples['detected'][0]['name'].replace(/[^A-Za-z ]/g, '') + " " +
                                                  $("#likelihood1").val().split("").join("S-") + "UNK " +
                                                  $("#likelihood2").val().split("").join("S-") + "UNK.csv"
                                         })
