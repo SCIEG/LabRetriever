@@ -297,6 +297,7 @@
                 log("creating csv failed: " + e.toString());
                 files = [];
             }
+            if (files.length == 0) b();
             SCIEG.currentResults = [];
             var executable = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDirectory(), "labr").nativePath();
             try {
