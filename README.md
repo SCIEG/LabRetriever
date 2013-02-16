@@ -1,11 +1,11 @@
 
 # Downloads
 
-Currently 1.1.0 beta release
+Currently 1.1.1 beta release
 
-[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.1.0.dmg)
+[Mac](http://lab-retriever.googlecode.com/files/LabRetriever-1.1.1.dmg)
 
-[Windows](http://lab-retriever.googlecode.com/files/LabRetriever-1.1.0.msi)
+[Windows](http://lab-retriever.googlecode.com/files/LabRetriever-1.1.1.msi)
 
 Linux (coming maybe? soon for Ubuntu)
 
