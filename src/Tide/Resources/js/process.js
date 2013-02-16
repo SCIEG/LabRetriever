@@ -14,13 +14,13 @@ SCIEG.Process.runProcess = function(val) {
         args:val
     });
     self._myStatus = "running: " + val.join(' ');
-    log(self._myStatus);
+//    log(self._myStatus);
     var moreCmd = Ti.platform === "win32" ? ["C:\\Windows\\System32\\more.com"] : ["cat"];
     var more = Ti.Process.createProcess(moreCmd);
 
-    more.setOnReadLine(function(data) {
-        log("data: " + data.toString());
-    });
+//    more.setOnReadLine(function(data) {
+//        log("data: " + data.toString());
+//    });
 
     self._myproc.stdout.attach(more.stdin);
     self._myproc.launch();
@@ -32,12 +32,12 @@ SCIEG.Process._checkStatus = function() {
     try {
     var self = SCIEG.Process;
     if (!self._myproc.isRunning()) {
-        log(" ... Done.");
+//        log(" ... Done.");
         self.running = false;
         clearInterval(self.interval);
     }
     } catch(e) {
-        log('exception checking status: ' + e.toString());
+//        log('exception checking status: ' + e.toString());
         clearInterval(self.interval);
     }
 }

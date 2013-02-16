@@ -13,7 +13,7 @@ String.prototype.capitalize = function() {
 
 function displayData() {
     var addedColumn = 0;
-    $("#locusTable tr").each(function(idx, value) {
+    $("#inputs tr").each(function(idx, value) {
         var samples = SCIEG.selectedSamples[SCIEG.activeColumn];
         var row = $(value);
         var cols = row.find('td');
@@ -59,9 +59,63 @@ function displayData() {
     });
 }
 
+function displayOutput(data) {
+
+    var dataSize = 0;
+    var keys = 0;
+    races = ["AFRICAN_AMERICAN", "CAUCASIAN", "HISPANIC"]
+    for (r in data) {
+        keys++;
+    }
+    $("#result tr").each(function(idx, value) {
+        if (idx == 0) {
+            return;
+        }
+        try {
+        var row = $(value);
+        var cols = row.find('td');
+        cols = addColumns(cols, keys + 1);
+
+
+        $.each(races, function(i,v){
+            if (data[v])
+                cols[1 + i].innerHTML = idx == 1 ? v : data[v][value.id] || '';
+        });
+
+        } catch (e) { log(e.toString()); }
+    });
+    $('#result').removeClass("hidden");
+    var tds = $('#inputs td');
+    var width = $(tds[0]).width() + $(tds[1]).width() + 35;
+    var origWidth = $('#inputs').width();
+    $('#inputs').css({'overflow': 'hidden', 'width': width});
+    $($('#result tr')[2]).find('td').css('height', $($('#inputs tr')[2]).find('td').height());
+    if ($('#expandInputs').length == 0) {
+        var b = document.createElement('span');
+        b.className = 'button';
+        b.innerHTML = '&gt;&gt;';
+        b.id = 'expandInputs';
+        b.style.marginLeft = '5px';
+        $('#inputs tr.names td')[1].appendChild(b);
+        $('#expandInputs').click(function(){
+            var ei = $('#expandInputs');
+            if (ei.html() == '&gt;&gt;') {
+                ei.html('&lt;&lt;');
+                $('#locusTable').css('width', origWidth + $('#result').width() + 100);
+                $('#inputs').animate({'width':origWidth}, 1500);
+            } else {
+                ei.html('&gt;&gt;');
+                $('#inputs').animate({'width':width}, 1500);
+            }
+        });
+    } else {
+        $('#expandInputs').html('&gt;&gt;');
+    }
+}
+
 function calculateUnattributed() {
     var maxcols = 0;
-    $("#locusTable tr").each(function(idx, value) {
+    $("#inputs tr").each(function(idx, value) {
         if (idx == 0) {
             maxcols = $(value).find('td').length;
         }
@@ -124,7 +178,7 @@ function removeSample(el) {
     if (SCIEG.colMap[sampleCol] == 'detected' || SCIEG.colMap[sampleCol] == 'suspected') {
         removeColumn(col, true, false);
         // show the + icon again
-        $($('#locusTable .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'visible');
+        $($('#inputs .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'visible');
     } else {
         var onHeaderColumn = sampleCol == col ||
             (sampleCol == 4 && col == 3 + SCIEG.selectedSamples[SCIEG.colMap[3]].length);
@@ -139,7 +193,7 @@ function removeSample(el) {
 }
 
 function removeColumn(idx, keepHeader, shiftCells) {
-    $("#locusTable tr").each(function(i, value) {
+    $("#inputs tr").each(function(i, value) {
         var cols = $(value).find('td');
         if (keepHeader) {
             if (i < 2) {
@@ -190,7 +244,7 @@ function selectFile() {
             displayData();
             calculateUnattributed();
             if (SCIEG.activeColumn == 'detected' || SCIEG.activeColumn == 'suspected') {
-                $($('#locusTable .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'hidden');
+                $($('#inputs .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'hidden');
             }
             break;
         }
@@ -241,7 +295,7 @@ function updateSampleSelect() {
 }
 
 function fileLoaded() {
-    $('#locusTable .addSample').each(function(idx, value){
+    $('#inputs .addSample').each(function(idx, value){
         $(value).html("<a href='#' onclick='chooseSample(this)'><img src='img/plus.png'/></a>");
     });
     updateSampleSelect();

@@ -103,6 +103,7 @@
 </div>
 
 <div id="locusTable">
+    <div id="inputs">
     <table>
         <tr class="names">
             <td class="col1"></td>
@@ -167,7 +168,71 @@
             <td class="col1">FGA</td>
         </tr>
     </table>
-
+</div>
+<div id="result" class="hidden">
+    <table>
+        <tr>
+            <td class="col1"><div id="saveBtn" class="hidden"><span class="button save">save</span></div></td>
+            <td colspan="3">Likelihood Ratio</td>
+        </tr>
+        <tr class="names">
+            <td class="col1"></td>
+            <td></td>
+        </tr>
+        <tr class="header">
+            <td class="col1"></td>
+            <td></td>
+        </tr>
+        <tr id="D8">
+            <td class="col1">D8</td>
+        </tr>
+        <tr id="D21">
+            <td class="col1">D21</td>
+        </tr>
+        <tr id="D7">
+            <td class="col1">D7</td>
+        </tr>
+        <tr id="CSF">
+            <td class="col1">CSF</td>
+        </tr>
+        <tr id="D3">
+            <td class="col1">D3</td>
+        </tr>
+        <tr id="TH0">
+            <td class="col1">TH0</td>
+        </tr>
+        <tr id="D13">
+            <td class="col1">D13</td>
+        </tr>
+        <tr id="D16">
+            <td class="col1">D16</td>
+        </tr>
+        <tr id="D2">
+            <td class="col1">D2</td>
+        </tr>
+        <tr id="D19">
+            <td class="col1">D19</td>
+        </tr>
+        <tr id="VWA">
+            <td class="col1">vWA</td>
+        </tr>
+        <tr id="TPO">
+            <td class="col1">TPO</td>
+        </tr>
+        <tr id="D18">
+            <td class="col1">D18</td>
+        </tr>
+        <tr id="D5">
+            <td class="col1">D5</td>
+        </tr>
+        <tr id="FGA">
+            <td class="col1">FGA</td>
+        </tr>
+        <tr id="total">
+            <td class="col1"><b>total</b></td>
+        </tr>
+    </table>
+</div>
 </div>
 
 <div id="sampleSelector" class="hidden"></div>
@@ -178,7 +243,7 @@
 
 <div id="splash">
     <h1 style="position: relative;">
-        <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:25; top:-10; height:100px"/>
+        <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:30; top:-10; height:100px"/>
         <span id="programName">Lab Retriever</span><br/>
     </h1>
 
@@ -217,12 +282,14 @@
 <script src="js/process.js"></script>
 <script src="js/displayData.js"></script>
 <script type="text/python" src="py/input_parser.py"></script>
+<script type="text/python" src="py/output_parser.py"></script>
 <script src="js/exporter.js"></script>
 <script>
     $().ready(function(){
         setTimeout(function(){$("#splash").fadeOut(1500, function(){$('#splash').hide()})}, 5000);
 
         $('#runner').click(function(){
+            SCIEG.toSave = [["","Detected","Unattributed","Assumed","Suspected","","Likelihood Ratio"]];
             var b = SCIEG.util.busy();
             try {
                 var files = SCIEG.exporter.createLabRcsv();
@@ -253,22 +320,49 @@
                     }
                     SCIEG.Process.runProcess(process);
                     SCIEG.resultsFoundTries = 0;
+                    SCIEG.toSave = []
+                    $('#inputs tr').each(function(i, v){
+                        if (i == 1) return;
+                        var row = []
+                        $(v).find('td').each(function(ii, vv){
+                            row.push('"' + vv.textContent + '"')
+                        });
+                        SCIEG.toSave.push(row);
+
+                    });
+                    var lastRow = [];
+                    $.each(SCIEG.toSave[0], function(){
+                        lastRow.push("");
+                    })
+                    SCIEG.toSave.push(lastRow);
+                    SCIEG.toSave.push(["P(DI)", $('#pdi').val(), "P(DO)", $('input[name="pdo"]').val(), "IBD Probabilities", $('#alleles0').val(), $('#alleles1').val(), $('#alleles2').val()]);
                     SCIEG.resultsInterval = setInterval(function(){
                         var f = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName);
                         if (f.exists()) {
                             clearInterval(SCIEG.resultsInterval);
                             var results = f.read();
                             SCIEG.currentResults.push(results);
-                            $('#results').html("<div><span class='button'>save</span><span class='close'>X</span>"+
-                                    "</div><br/><table><tr><td>" +
-                                    results.split(",").join("</td><td>").split("\n").join("</td></tr><tr><td>") +
-                                    "</td></tr></table>").removeClass("hidden");
-                            $('#overlay').removeClass("hidden");
-                            $('#results span.button').click(function(){
+                            var data = outputParse(results.toString());
+                            $('#saveBtn').removeClass("hidden");
+                            displayOutput(data);
+                            $('#result tr').each(function(i, v){
+                                if (i == 0) {
+                                    SCIEG.toSave[0].push("");
+                                    SCIEG.toSave[0].push("Likelihood Ratio");
+                                    return;
+                                }
+                                if (i == 2) return;
+                                if (i > 2) i--;
+                                SCIEG.toSave[i].push("");
+                                $(v).find('td').each(function(ii, vv){
+                                    SCIEG.toSave[i].push(vv.textContent);
+                                });
+                            })
+                            $('#saveBtn span.button').click(function(){
                                 var pdo = [];
                                 $("input[name='pdo']").each(function(i,v){pdo.push(v.value);});
                                 Ti.UI.currentWindow.openSaveAsDialog(function(paths){
-                                            f.copy(paths[0]);
+                                            writeOutput(paths[0], SCIEG.toSave);
                                         },
                                         {      title: 'Lab Retriever results',
                                             multiple: false,
@@ -276,8 +370,8 @@
                                          defaultName: getISODate() + " " +
                                                  SCIEG.selectedSamples['detected'][0]['name'] + " " +
                                                  $("#likelihood1").val().split("").join("S-") + "UNK " +
-                                                 $("#likelihood2").val().split("").join("S-") + "UNK " +
-                                                 pdo.join(' ') + '.csv'})
+                                                 $("#likelihood2").val().split("").join("S-") + "UNK.csv"
+                                        })
                             });
                             $('#results span.close').click(removeOverlay);
                             b();
@@ -289,7 +383,7 @@
                                 b();
                                 SCIEG.Process.kill();
                             }
-                            log("file does not exist: " + outputName);
+//                            log("file does not exist: " + outputName);
                         }
                     }, 250);
 

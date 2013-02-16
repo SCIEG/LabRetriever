@@ -1,4 +1,4 @@
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 input.half { width: 100px; }
 input.quarter { width: 50px; }
@@ -45,6 +45,9 @@ div.line { border:1px solid }
 #locusTable td.col1 { width:35px; }
 #locusTable tr.names td { padding: 10px; }
 
+#locusTable #inputs { float: left; }
+#locusTable #result { padding-left: 40px; border-left: solid 1px black; display: inline-block; margin-left: 40px; }
+
 #sampleSelector { position: absolute; border: solid 1px; z-index: 6; background-color: white; padding: 6px; max-width: 525px;}
 #sampleSelector li { cursor: pointer; }
 #sampleSelector li:hover { background-color: #C0C0C0; }
@@ -59,6 +62,7 @@ input[name='pdo'] { margin-bottom: 3px; }
 
 #results { overflow:auto; position: absolute; width: 1100px; height:600px; border: 1px solid black; padding: 20px; z-index: 6; background-color: white; top: 125px; }
 #results table td { border: 1px dotted #C0C0C0; padding: 3px; }
+#saveBtn { margin: 7px; }
 
 #status { width: 600px; height:300px; position:absolute; z-index: 20; }
 
@@ -69,7 +73,7 @@ input[name='pdo'] { margin-bottom: 3px; }
     background-repeat: no-repeat; background-position: center; background-color: white;}
 
 
-#splash { position: fixed; height: 96%; width: 100%; top:0; padding:20px; overflow: auto; opacity: 1; background-color: white; font-family: helvetica;}
+#splash { position: fixed; height: 96%; width: 100%; top:0; padding:10px; overflow: auto; opacity: 1; background-color: white; font-family: helvetica;}
 #splash h1 { font-size: 48px; }
 #splash h2 { font-size: 24px; }
 #splash h3 { font-size: 18px; margin-bottom: 30px; }
