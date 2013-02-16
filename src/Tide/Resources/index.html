@@ -213,7 +213,7 @@
         <tr id="D19">
             <td class="col1">D19</td>
         </tr>
-        <tr id="VWA">
+        <tr id="vWA">
             <td class="col1">vWA</td>
         </tr>
         <tr id="TPO">
@@ -320,22 +320,36 @@
                     }
                     SCIEG.Process.runProcess(process);
                     SCIEG.resultsFoundTries = 0;
-                    SCIEG.toSave = []
+                    SCIEG.toSave = [
+                        ['Case ID:', $('#caseInput').val()],
+                        ['Sample ID:', $('#sampleInput').val()],
+                        ['Analyst:', $('#analystInput').val()], []
+                    ]
+                    SCIEG.saveRowOffset = 4;
                     $('#inputs tr').each(function(i, v){
                         if (i == 1) return;
                         var row = []
                         $(v).find('td').each(function(ii, vv){
-                            row.push('"' + vv.textContent + '"')
+                            var t = $(vv).text();
+                            if (i==2) {
+                                t = t.replace(/remove$/, '');
+                            } else {
+                                t = t.replace(/[^\dA-Za-z]/g, ' ')
+                            }
+                            row.push('"' + t + '"')
                         });
                         SCIEG.toSave.push(row);
 
                     });
                     var lastRow = [];
-                    $.each(SCIEG.toSave[0], function(){
+                    $.each(SCIEG.toSave[SCIEG.saveRowOffset], function(){
                         lastRow.push("");
                     })
                     SCIEG.toSave.push(lastRow);
-                    SCIEG.toSave.push(["P(DI)", $('#pdi').val(), "P(DO)", $('input[name="pdo"]').val(), "IBD Probabilities", $('#alleles0').val(), $('#alleles1').val(), $('#alleles2').val()]);
+                    SCIEG.toSave.push([""]);
+                    SCIEG.toSave.push(["P(DI)", "P(DO)",  "IBD Probabilities"]);
+                    SCIEG.toSave.push([ $('#pdi').val(), $('input[name="pdo"]').val(),
+                        $('#alleles0').val() + ", " + $('#alleles1').val() + ", " + $('#alleles2').val()]);
                     SCIEG.resultsInterval = setInterval(function(){
                         var f = Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), outputName);
                         if (f.exists()) {
@@ -347,33 +361,17 @@
                             displayOutput(data);
                             $('#result tr').each(function(i, v){
                                 if (i == 0) {
-                                    SCIEG.toSave[0].push("");
-                                    SCIEG.toSave[0].push("Likelihood Ratio");
+                                    SCIEG.toSave[SCIEG.saveRowOffset].push("");
+                                    SCIEG.toSave[SCIEG.saveRowOffset].push("Likelihood Ratio");
                                     return;
                                 }
                                 if (i == 2) return;
                                 if (i > 2) i--;
-                                SCIEG.toSave[i].push("");
+                                SCIEG.toSave[i+SCIEG.saveRowOffset].push("");
                                 $(v).find('td').each(function(ii, vv){
-                                    SCIEG.toSave[i].push(vv.textContent);
+                                    SCIEG.toSave[i+SCIEG.saveRowOffset].push(vv.textContent);
                                 });
                             })
-                            $('#saveBtn span.button').click(function(){
-                                var pdo = [];
-                                $("input[name='pdo']").each(function(i,v){pdo.push(v.value);});
-                                Ti.UI.currentWindow.openSaveAsDialog(function(paths){
-                                            writeOutput(paths[0], SCIEG.toSave);
-                                        },
-                                        {      title: 'Lab Retriever results',
-                                            multiple: false,
-                                               types: ['csv'],
-                                         defaultName: getISODate() + " " +
-                                                 SCIEG.selectedSamples['detected'][0]['name'].replace(/[^A-Za-z ]/g, '') + " " +
-                                                 $("#likelihood1").val().split("").join("S-") + "UNK " +
-                                                 $("#likelihood2").val().split("").join("S-") + "UNK.csv"
-                                        })
-                            });
-                            $('#results span.close').click(removeOverlay);
                             b();
                         } else {
                             if (SCIEG.resultsFoundTries++ > 36000) {
@@ -431,6 +429,20 @@
             } else {
                 ul.animate({height:ul[0].scrollHeight}, 1000);
             }
+        });
+
+        $('#saveBtn span.button').click(function(){
+            Ti.UI.currentWindow.openSaveAsDialog(function(paths){
+                        writeOutput(paths[0], SCIEG.toSave);
+                    },
+                    {      title: 'Lab Retriever results',
+                        multiple: false,
+                        types: ['csv'],
+                        defaultName: getISODate() + " " +
+                                $($('#inputs td.sampleName')[0]).text().replace(/[^A-Za-z\d ]/g, '').replace(/remove$/, '') + " " +
+                                $("#likelihood1").val().split("").join("S-") + "UNK " +
+                                $("#likelihood2").val().split("").join("S-") + "UNK.csv"
+                    })
         });
     })
 </script>

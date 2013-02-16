@@ -62,11 +62,11 @@ function displayData() {
 function displayOutput(data) {
 
     var dataSize = 0;
-    var keys = 0;
-    races = ["AFRICAN_AMERICAN", "CAUCASIAN", "HISPANIC"]
+    var races = []; //"AFRICAN_AMERICAN", "CAUCASIAN", "HISPANIC"
     for (r in data) {
-        keys++;
+        races.push(r);
     }
+    races.sort();
     $("#result tr").each(function(idx, value) {
         if (idx == 0) {
             return;
@@ -74,13 +74,19 @@ function displayOutput(data) {
         try {
         var row = $(value);
         var cols = row.find('td');
-        cols = addColumns(cols, keys + 1);
+        cols = addColumns(cols, races.length + 1);
 
 
         $.each(races, function(i,v){
             if (data[v])
                 cols[1 + i].innerHTML = idx == 1 ? v : data[v][value.id] || '';
         });
+
+        // trim extra columns from displaying is running again.
+        var colLength = cols.length;
+        while (colLength > races.length + 1) {
+            cols[0].parentNode.removeChild(cols[--colLength]);
+        }
 
         } catch (e) { log(e.toString()); }
     });
