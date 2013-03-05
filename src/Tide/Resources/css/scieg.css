@@ -78,3 +78,5 @@ input[name='pdo'] { margin-bottom: 3px; }
 #splash h2 { font-size: 24px; }
 #splash h3 { font-size: 18px; margin-bottom: 30px; }
 #splash img[alt="SCIEG"] { vertical-align: text-bottom; }
+
+#total td:not([class='col1']) { font-weight: bold; border-top: 1px solid black; }

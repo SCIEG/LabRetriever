@@ -396,11 +396,17 @@
         $('#loadFile').click(function(){
             try {
             Ti.UI.currentWindow.openFileChooserDialog(function(names){
+                var b = SCIEG.util.busy();
                 try {
-                    var b = SCIEG.util.busy();
-                    if (names.length == 0) return; // user hit cancel
+                    if (names.length == 0) {
+                        // user hit cancel
+                        b();
+                        return;
+                    }
                     var n = names[0];
                     if (n.length == 0) {
+                        // somehow didn't enter a file name?
+                        b();
                         return;
                     }
                     var f = Ti.Filesystem.getFile(n);
