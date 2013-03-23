@@ -215,6 +215,12 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
         AlleleProfile suspectProfile;
         vector<ReplicateData> replicateDatas;
 
+        // If only one suspect allele is present, then assume it means that there are two of them.
+        // TODO: fix quick hack for this:
+        if (suspectAlleles.size() == 1) {
+            suspectProfile.addAllele(suspectAlleles[0]);
+        }
+
         for (unsigned int i = 0; i < suspectAlleles.size(); i++) {
             suspectProfile.addAllele(suspectAlleles[i]);
         }
