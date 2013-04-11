@@ -142,6 +142,8 @@ namespace LabRetriever {
                 } END_CHOOSE_RANDOM_ALLELES;
             } END_CHOOSE_ONE_RANDOM_ALLELE;
         }
+        // Divide by two for the two alleles you can choose from the suspect.
+        oneIBDLogLikelihood -= log(2.0);
         numComplete = totalToComplete - pow(numAlleles, 4);
 
         double bothIBDLogLikelihood = (ibdProbability.bothAllelesInCommonProb == 0) ?
