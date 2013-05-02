@@ -49,11 +49,13 @@ function displayData() {
         else display += (value.id in sample)? sample[value.id].join('&nbsp;') : '';
         display += '</span><input type="text" style="display:none;" id="' + sampleNameId + '"/>';
 
-        $(cols[colIdx]).html(display).addClass("sampleName").editables({
+        var cell = $(cols[colIdx]);
+        cell.html(display).editables({
             beforeFreeze: function(l){if (this.val()) l.text(this.val());},
             beforeEdit: function(t){t.val(this.text());hideRemove.call(this.parent());}
         });
         if (idx == 2) {
+            cell.addClass("sampleName");
             $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
         }
     });
