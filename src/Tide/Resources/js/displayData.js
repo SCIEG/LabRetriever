@@ -42,19 +42,19 @@ function displayData() {
         }
 
         var sample = samples[samples.length - 1];
-        if (idx == 2) {
-            var sampleNameId = 'editable' + sample['name'].replace(/ /g, '').replace(/\|/g, '');
-            var display = '<span data-type="editable" data-for="#' + sampleNameId + '">' +
-                sample['name'] + '</span><input type="text" style="display:none;" id="' + sampleNameId + '"/>';
 
-            $(cols[colIdx]).html(display).addClass("sampleName").editables({
-                beforeFreeze: function(l){if (this.val()) l.text(this.val());},
-                beforeEdit: function(t){t.val(this.text());hideRemove.call(this.parent());}
-            });
+        var sampleNameId = 'editable' + sample['name'].replace(/ /g, '').replace(/\|/g, '') + idx;
+        var display = '<span data-type="editable" data-for="#' + sampleNameId + '">';
+        if (idx == 2) display += sample['name'];
+        else display += (value.id in sample)? sample[value.id].join('&nbsp;') : '';
+        display += '</span><input type="text" style="display:none;" id="' + sampleNameId + '"/>';
+
+        $(cols[colIdx]).html(display).addClass("sampleName").editables({
+            beforeFreeze: function(l){if (this.val()) l.text(this.val());},
+            beforeEdit: function(t){t.val(this.text());hideRemove.call(this.parent());}
+        });
+        if (idx == 2) {
             $('.sampleName').mouseenter(showRemove).mouseleave(hideRemove);
-        } else {
-            var display = (value.id in sample)? sample[value.id].join('&nbsp;') : '';
-            $(cols[colIdx]).html(display);
         }
     });
 }
@@ -161,6 +161,7 @@ function showRemove(evt) {
     } else {
         if (el.find('input').css('display') == 'none')
             rm.removeClass('hidden');
+        rm.css({'left': el.position().left + el.width});
     }
 }
 
