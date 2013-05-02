@@ -161,7 +161,8 @@ function showRemove(evt) {
     } else {
         if (el.find('input').css('display') == 'none')
             rm.removeClass('hidden');
-        rm.css({'left': el.position().left + el.width});
+        rm[0].style.left = el.position().left + el.width();
+
     }
 }
 
