@@ -11,6 +11,8 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+var sampleNameIdNum = 0;
+
 function displayData() {
     var addedColumn = 0;
     $("#inputs tr").each(function(idx, value) {
@@ -43,7 +45,7 @@ function displayData() {
 
         var sample = samples[samples.length - 1];
 
-        var sampleNameId = 'editable' + sample['name'].replace(/ /g, '').replace(/\|/g, '') + idx;
+        var sampleNameId = 'editable' + (sampleNameIdNum++);
         var display = '<span data-type="editable" data-for="#' + sampleNameId + '">';
         if (idx == 2) display += sample['name'];
         else display += (value.id in sample)? sample[value.id].join('&nbsp;') : '';
