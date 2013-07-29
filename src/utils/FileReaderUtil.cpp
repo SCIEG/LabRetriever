@@ -52,7 +52,9 @@ namespace LabRetriever {
             return HISPANIC;
         } else if (name == "ALL") {
             return ALL;
-        }
+        } else if (name == "ASIAN") {
+            return ASIAN;
+        } else
         // TODO: fix default
         return ALL;
     }
@@ -65,6 +67,8 @@ namespace LabRetriever {
                 return "CAUCASIAN";
             case HISPANIC:
                 return "HISPANIC";
+            case ASIAN:
+                return "ASIAN";
             // TODO: fix default -- 'ALL' shouldn't ever appear
             case ALL:
             default:

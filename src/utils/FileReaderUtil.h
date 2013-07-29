@@ -29,7 +29,10 @@ namespace LabRetriever {
         AFRICAN_AMERICAN = 1,
         CAUCASIAN,
         HISPANIC,
-        RACE_END
+        RACE_END,
+		// TODO: move this in the middle when ASIAN data gets added to table, or
+		// indexing table gets fixed.
+		ASIAN
     };
 
     Race raceFromString(const string& name);

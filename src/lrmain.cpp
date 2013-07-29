@@ -1,6 +1,6 @@
 #include "lrmain.h"
 
-void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>& likelihoodSolvers,
+void outputData(const set<string>& lociToRun, const vector<LikelihoodSolver*>& likelihoodSolvers,
         const map<Race, vector<map<string, double> > >& raceToSolverIndexToLocusLogProb,
         const map<Race, vector<double> >& raceToSolverIndexToLogProb,
         const vector<Race> races,
@@ -23,7 +23,7 @@ void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>&
 
         // Output probability header
         outputStringStream << "Probabilities, total";
-        for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+        for (set<string>::const_iterator iter = lociToRun.begin(); iter != lociToRun.end();
                 iter++) {
             const string& locus = *iter;
             outputStringStream << ", " << locus;
@@ -35,7 +35,7 @@ void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>&
             map<string, double> locusToLogProb = solverIndexToLocusLogProb[solverIndex];
             outputStringStream << likelihoodSolvers[solverIndex]->name << ", "
                     << exp(solverIndexToLogProb[solverIndex]);
-            for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+            for (set<string>::const_iterator iter = lociToRun.begin(); iter != lociToRun.end();
                     iter++) {
                 const string& locus = *iter;
                 double logProb = locusToLogProb[locus];
@@ -48,7 +48,7 @@ void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>&
 
         // Output probability ratio header
         outputStringStream << "Probabilities Ratios, total";
-        for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+        for (set<string>::const_iterator iter = lociToRun.begin(); iter != lociToRun.end();
                 iter++) {
             const string& locus = *iter;
             outputStringStream << ", " << locus;
@@ -64,7 +64,7 @@ void outputData(const set<string>& lociToCheck, const vector<LikelihoodSolver*>&
                 string ratioName = likelihoodSolvers[i]->name + " to " + likelihoodSolvers[j]->name;
                 double diff = solverIndexToLogProb[i] - solverIndexToLogProb[j];
                 outputStringStream << ratioName << ", " << exp(diff);
-                for (set<string>::const_iterator iter = lociToCheck.begin(); iter != lociToCheck.end();
+                for (set<string>::const_iterator iter = lociToRun.begin(); iter != lociToRun.end();
                         iter++) {
                     const string& locus = *iter;
                     double logProbDiff = locusToLogProb_i[locus] - locusToLogProb_j[locus];
@@ -184,21 +184,21 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     }
 
 
-    // TODO: check for known loci and alleles.
-    // I think this todo is done.
-    set<string> lociToCheck;
+    // Check for loci where there is a suspect allele, and the assumed and unattributed
+	// rows are present (but possibly empty).
+    set<string> lociToRun;
     for (map<string, vector<string> >::const_iterator iter = locusToSuspectAlleles.begin();
             iter != locusToSuspectAlleles.end(); iter++) {
         const string& locus = iter->first;
         if (locusToAssumedAlleles.find(locus) != locusToAssumedAlleles.end() &&
                 locusToUnattributedAlleles.find(locus) != locusToUnattributedAlleles.end()) {
-            lociToCheck.insert(locus);
+            lociToRun.insert(locus);
         }
     }
 
     // Create configurations and run on likelihood solvers.
-    for (set<string>::const_iterator iter = lociToCheck.begin();
-            iter != lociToCheck.end(); iter++) {
+    for (set<string>::const_iterator iter = lociToRun.begin();
+            iter != lociToRun.end(); iter++) {
         string locus = *iter;
 
         vector<set<string> > unattributedAlleles = locusToUnattributedAlleles[locus];
@@ -265,7 +265,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
     }
 
     // TODO: Output in proper format to file:
-    outputData(lociToCheck, likelihoodSolvers, raceToSolverIndexToLocusLogProb,
+    outputData(lociToRun, likelihoodSolvers, raceToSolverIndexToLocusLogProb,
             raceToSolverIndexToLogProb, races, outputFileName);
     return raceToSolverIndexToLogProb;
 }
