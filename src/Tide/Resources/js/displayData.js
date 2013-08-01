@@ -190,7 +190,7 @@ function removeSample(el) {
     if (SCIEG.colMap[sampleCol] == 'detected' || SCIEG.colMap[sampleCol] == 'suspected') {
         removeColumn(col, true, false);
         // show the + icon again
-        $($('#inputs .addSample a')[SCIEG.activeColumn == 'detected'?0:2]).css('visibility', 'visible');
+        $($('#inputs .addSample a')[SCIEG.colMap[sampleCol] == 'detected'?0:2]).css('visibility', 'visible');
     } else {
         var onHeaderColumn = sampleCol == col ||
             (sampleCol == 4 && col == 3 + SCIEG.selectedSamples[SCIEG.colMap[3]].length);
