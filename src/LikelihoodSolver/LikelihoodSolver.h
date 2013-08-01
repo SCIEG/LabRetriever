@@ -57,9 +57,11 @@ namespace LabRetriever {
                 ONE_SUSPECT_NO_UNKNOWNS,
                 ONE_SUSPECT_ONE_UNKNOWN,
                 ONE_SUSPECT_TWO_UNKNOWNS,
+				ONE_SUSPECT_THREE_UNKNOWNS,
                 NO_SUSPECT_ONE_UNKNOWN,
                 NO_SUSPECT_TWO_UNKNOWNS,
-                NO_SUSPECT_THREE_UNKNOWNS
+                NO_SUSPECT_THREE_UNKNOWNS,
+				NO_SUSPECT_FOUR_UNKNOWNS
             };
 
             virtual ~LikelihoodSolver() {}

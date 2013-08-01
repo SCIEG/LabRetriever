@@ -284,6 +284,9 @@ int main(int argc, char *argv[]) {
         for (int i = 3; i < argc; i++) {
             if (argv[i][0] == '0') {
                 switch(argv[i][1]) {
+                case '4':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_FOUR_UNKNOWNS));
+                    break;
                 case '3':
                     solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::NO_SUSPECT_THREE_UNKNOWNS));
                     break;
@@ -295,6 +298,9 @@ int main(int argc, char *argv[]) {
                 }
             } else { // one suspect
                 switch(argv[i][1]) {
+                case '3':
+                    solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::ONE_SUSPECT_THREE_UNKNOWNS));
+                    break;
                 case '2':
                     solversToUse.push_back(LikelihoodSolver::getSolver(LikelihoodSolver::ONE_SUSPECT_TWO_UNKNOWNS));
                     break;
