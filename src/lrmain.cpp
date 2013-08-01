@@ -137,7 +137,7 @@ map<Race, vector<double> > run(const string& executablePath, const string& input
             identicalByDescentProbability.bothAllelesInCommonProb = atof(row[3].c_str());
         } else {
             unsigned int index = header.find("-");
-            if (index == -1) continue;
+            if (index == string::npos) continue;
             string locus = header.substr(0, index);
             string locusType = header.substr(index+1, header.size());
             set<string> alleleSet;
@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
 
     // The executable file name is 'labr' but on windows is 'labr.exe'
     int fileNameLength = 4;
-    if (executablePath.find(".exe") != -1) {
+    if (executablePath.find(".exe") != string::npos) {
         fileNameLength += 4;
     }
 
