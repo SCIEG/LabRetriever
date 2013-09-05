@@ -27,7 +27,7 @@ SCIEG.exporter.createLabRcsv = function() {
         for (var locus in SCIEG.selectedSamples['detected'][0]) {
             if (locus == 'name') continue;
             var evidence = SCIEG.selectedSamples['detected'][0][locus].slice(0);
-            if (evidence.length == 0) continue;
+//            if (evidence.length == 0) continue;
             var unattributed = evidence.slice(0);
             var assumed = [];
             if (SCIEG.selectedSamples['assumed'].length) {
@@ -62,13 +62,13 @@ SCIEG.exporter.createLabRcsv = function() {
         self._out.close();
     });
     return files;
-}
+};
 
 SCIEG.exporter.sorter = function(a,b){ return parseFloat(a) - parseFloat(b); };
 
 SCIEG.exporter.writeLine = function(o) {
     SCIEG.exporter._out.writeLine(o);
-}
+};
 
 SCIEG.exporter.filesCreated = 0;
 
@@ -79,4 +79,4 @@ SCIEG.exporter._createFile = function() {
     SCIEG.exporter._out.open(Ti.Filesystem.MODE_WRITE);
     return Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(),
         "input" + (SCIEG.exporter.filesCreated++) +".csv").nativePath();
-}
+};
