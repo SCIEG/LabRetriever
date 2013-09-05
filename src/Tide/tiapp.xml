@@ -3,7 +3,7 @@
 <!-- These values are edited/maintained by TideSDK Developer -->
 <id>org.scieg</id>
 <name>LabRetriever</name>
-<version>1.1.4</version>
+<version>1.1.5</version>
 <publisher>SCIEG</publisher>
 <url>https://github.com/SCIEG/LabRetriever</url>
 <icon>lab_retriever_icon.png</icon>
