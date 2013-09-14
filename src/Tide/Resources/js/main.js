@@ -1,13 +1,13 @@
 $().ready( function () {
-//	if(window.location.href.indexOf("noSplash") == -1) {
-//		setTimeout( function () {
-//			$( "#splash" ).fadeOut( 750, function () {
-//				$( '#splash' ).hide()
-//			} )
-//		}, 3500 );
-//	} else {
+	if(window.location.href.indexOf("noSplash") == -1) {
+		setTimeout( function () {
+			$( "#splash" ).fadeOut( 750, function () {
+				$( '#splash' ).hide()
+			} )
+		}, 3500 );
+	} else {
 		$( '#splash' ).remove();
-//	}
+	}
 
 
 	$( '#runner' ).click( function () {
