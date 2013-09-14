@@ -1,13 +1,13 @@
 $().ready( function () {
-	if(window.location.href.indexOf("noSplash") == -1) {
-		setTimeout( function () {
-			$( "#splash" ).fadeOut( 750, function () {
-				$( '#splash' ).hide()
-			} )
-		}, 3500 );
-	} else {
+//	if(window.location.href.indexOf("noSplash") == -1) {
+//		setTimeout( function () {
+//			$( "#splash" ).fadeOut( 750, function () {
+//				$( '#splash' ).hide()
+//			} )
+//		}, 3500 );
+//	} else {
 		$( '#splash' ).remove();
-	}
+//	}
 
 
 	$( '#runner' ).click( function () {
@@ -50,11 +50,12 @@ $().ready( function () {
 					['Sample ID:', $( '#sampleInput' ).val()],
 					['Analyst:', $( '#analystInput' ).val()],
 					[]
-				]
+				];
+
 				SCIEG.saveRowOffset = 4;
 				$( '#inputs tr' ).each( function ( i, v ) {
 					if ( i == 1 ) return;
-					var row = []
+					var row = [];
 					$( v ).find( 'td' ).each( function ( ii, vv ) {
 						var t = $( vv ).text();
 						if ( i == 2 ) {
@@ -70,7 +71,7 @@ $().ready( function () {
 				var lastRow = [];
 				$.each( SCIEG.toSave[SCIEG.saveRowOffset], function () {
 					lastRow.push( "" );
-				} )
+				} );
 				SCIEG.toSave.push( lastRow );
 				SCIEG.toSave.push( [""] );
 				SCIEG.toSave.push( ["P(DI)", "P(DO)", "IBD Probabilities"] );
@@ -136,8 +137,12 @@ $().ready( function () {
 					}
 					var f = Ti.Filesystem.getFile( n );
 					if ( f.exists() ) {
-						if ( SCIEG.fileData == undefined ) SCIEG.fileData = [];
+						if ( SCIEG.fileData === undefined ){
+							SCIEG.fileData = [];
+						}
+
 						var data = window.load( f.nativePath() );
+
 						if ( data ) {
 							SCIEG.fileData = SCIEG.fileData.concat( data.splice( 0 ) );
 							fileLoaded();

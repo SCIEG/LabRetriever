@@ -1,237 +1,167 @@
-<html xmlns="http://www.w3.org/1999/html"><head>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/scieg.css" rel="stylesheet" media="screen">
-    <style>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="css/scieg.css" rel="stylesheet" media="screen">
+	<style>
 
-    </style>
-    <script>
-        (function() {
-            Ti.UI.currentWindow.setHeight(850);
-            Ti.UI.currentWindow.setWidth(1200);
-            Ti.UI.currentWindow.setX(70);
-            Ti.UI.currentWindow.setY(Ti.platform == "win32"? 0 : 25);
-        })();
+	</style>
+	<script>
+		(function() {
+			Ti.UI.currentWindow.setHeight( 850 );
+			Ti.UI.currentWindow.setWidth( 1200 );
+			Ti.UI.currentWindow.setX( 70 );
+			Ti.UI.currentWindow.setY( Ti.platform == "win32" ? 0 : 25 );
+		})();
 
-    </script>
+	</script>
 </head>
 <body>
 <a href="?noSplash" class='btn restart'>Clear</a>
+
 <h1 style="position: relative;">
-    <img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/>
-    <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:0; height:100px"/>
+	<img alt="SCIEG" src="img/SCIEG_logo.png" width="150"/>
+	<img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:0; height:100px"/>
 </h1>
 
 <div class="column">
-    <div><label for="caseInput">Case ID</label>
-         <input id="caseInput" value=""/></div>
-    <div><label for="sampleInput">Sample ID</label>
-         <input id="sampleInput" value=""/></div>
-    <div><label for="analystInput">Analyst</label>
-         <input id="analystInput" value=""/> </div>
-    <br/>
-    <!--label style="display:inline">Suspected Contributors:</label>
-    <select disabled id="suspect_contributors">
-        <option>0</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-    </select -->
+	<div><label for="caseInput">Case ID</label>
+		<input id="caseInput" value=""/></div>
+	<div><label for="sampleInput">Sample ID</label>
+		<input id="sampleInput" value=""/></div>
+	<div><label for="analystInput">Analyst</label>
+		<input id="analystInput" value=""/></div>
+	<br/>
+	<!--label style="display:inline">Suspected Contributors:</label>
+	<select disabled id="suspect_contributors">
+		<option>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+	</select -->
 
-    <div class="separator"></div>
+	<div class="separator"></div>
 
-    <h5>Parameters</h5>
-    <ul>
-        <!--  Enable only for 'Dev' builds
-        <li>alpha <input type="text" id="alpha" class="half" value="0.5"/></li>
-        -->
-        <input type="hidden" id="alpha" class="half" value="0.5"/>
+	<h5>Parameters</h5>
+	<ul>
+		<!--  Enable only for 'Dev' builds
+		<li>alpha <input type="text" id="alpha" class="half" value="0.5"/></li>
+		-->
+		<input type="hidden" id="alpha" class="half" value="0.5"/>
 
-        <li>P(DI) <input type="text" id="pdi" class="half" value="0.01"/></li>
-        <li>P(DO) <input type="text" name="pdo" class="quarter" value=""/></li>
-        <li class="hidden"><a href="#" id="addDO" onclick="addAnotherDO(event)">add another DO <img src="img/plus.png"/></a></li>
-        <li>Race <select id="race">
-            <option value="ALL">All</option>
-            <option value="AFRICAN_AMERICAN">African American</option>
-            <option value="CAUCASIAN">Caucasian</option>
-            <option value="HISPANIC">Hispanic</option>
-        </select></li>
-    </ul>
+		<li>P(DI) <input type="text" id="pdi" class="half" value="0.01"/></li>
+		<li>P(DO) <input type="text" name="pdo" class="quarter" value=""/></li>
+		<li class="hidden"><a href="#" id="addDO" onclick="addAnotherDO(event)">add another DO <img src="img/plus.png"/></a>
+		</li>
+		<li>Race <select id="race">
+			<option value="ALL">All</option>
+			<option value="AFRICAN_AMERICAN">African American</option>
+			<option value="CAUCASIAN">Caucasian</option>
+			<option value="HISPANIC">Hispanic</option>
+		</select></li>
+	</ul>
 
-    <div class="separator"></div>
+	<div class="separator"></div>
 
-    <h5 id="ibd_probabilities">IBD Probabilities</h5>
-    <ul>
-        <li>0 Alleles <input type="text" id="alleles0" class="quarter" value="1"/></li>
-        <li>1 Alleles <input type="text" id="alleles1" class="quarter" value="0"/></li>
-        <li>2 Alleles <input type="text" id="alleles2" class="quarter" value="0"/></li>
-    </ul>
+	<h5 id="ibd_probabilities">IBD Probabilities</h5>
+	<ul>
+		<li>0 Alleles <input type="text" id="alleles0" class="quarter" value="1"/></li>
+		<li>1 Alleles <input type="text" id="alleles1" class="quarter" value="0"/></li>
+		<li>2 Alleles <input type="text" id="alleles2" class="quarter" value="0"/></li>
+	</ul>
 
-    <div class="separator"></div>
+	<div class="separator"></div>
 
-    <h5>Likelihood Ratio</h5>
+	<h5>Likelihood Ratio</h5>
 
-    <ul>
-        <li>H1 <select id="likelihood1">
-            <option value="10">1 S, 0 UNK</option>
-            <option value="11">1 S, 1 UNK</option>
-            <option value="12">1 S, 2 UNK</option>
-            <!--option value="20">2 S, 0 UNK</option>
-            <option value="21">2 S, 1 UNK</option>
-            <option value="30">3 S, 0 UNK</option-->
-        </select></li>
+	<ul>
+		<li>H1 <select id="likelihood1">
+			<option value="10">1 S, 0 UNK</option>
+			<option value="11">1 S, 1 UNK</option>
+			<option value="12">1 S, 2 UNK</option>
+			<!--option value="20">2 S, 0 UNK</option>
+			<option value="21">2 S, 1 UNK</option>
+			<option value="30">3 S, 0 UNK</option-->
+		</select></li>
 
-        <li>H2 <select id="likelihood2">
-            <option value="01">0 S, 1 UNK</option>
-            <option value="02">0 S, 2 UNK</option>
-            <option value="03">0 S, 3 UNK</option>
-            <option value="10">1 S, 0 UNK</option>
-            <option value="11">1 S, 1 UNK</option>
-            <option value="12">1 S, 2 UNK</option>
-            <!--option value="20">2 S, 0 UNK</option>
-            <option value="21">2 S, 1 UNK</option>
-            <option value="30">3 S, 0 UNK</option-->
-        </select></li>
-    </ul>
+		<li>H2 <select id="likelihood2">
+			<option value="01">0 S, 1 UNK</option>
+			<option value="02">0 S, 2 UNK</option>
+			<option value="03">0 S, 3 UNK</option>
+			<option value="10">1 S, 0 UNK</option>
+			<option value="11">1 S, 1 UNK</option>
+			<option value="12">1 S, 2 UNK</option>
+			<!--option value="20">2 S, 0 UNK</option>
+			<option value="21">2 S, 1 UNK</option>
+			<option value="30">3 S, 0 UNK</option-->
+		</select></li>
+	</ul>
 
 </div>
 
 <div id="inputFile">
-    <span class="button" id="loadFile">Load a file</span>
-    <span class="button hidden"  id="runner">RUN!</span>
-    <div id="running" class="output"></div>
+	<span class="button" id="loadFile">Load a file</span>
+	<span class="button hidden" id="runner">RUN!</span>
+
+	<div id="running" class="output"></div>
 </div>
 
 <div id="locusTable">
-    <div id="inputs">
-    <table>
-        <tr class="names">
-            <td class="col1"></td>
-            <td>Detected</td>
-            <td>Unattributed</td>
-            <td>Assumed</td>
-            <td>Suspected</td>
-        </tr>
-        <tr class="header">
-            <td class="col1"></td>
-            <td class="addSample"></td>
-            <td></td>
-            <td class="addSample"></td>
-            <td class="addSample"></td>
-        </tr>
-        <tr>
-            <td class="col1"></td>
-        </tr>
-        <tr id="D8">
-            <td class="col1">D8</td>
-        </tr>
-        <tr id="D21">
-            <td class="col1">D21</td>
-        </tr>
-        <tr id="D7">
-            <td class="col1">D7</td>
-        </tr>
-        <tr id="CSF">
-            <td class="col1">CSF</td>
-        </tr>
-        <tr id="D3">
-            <td class="col1">D3</td>
-        </tr>
-        <tr id="TH0">
-            <td class="col1">TH0</td>
-        </tr>
-        <tr id="D13">
-            <td class="col1">D13</td>
-        </tr>
-        <tr id="D16">
-            <td class="col1">D16</td>
-        </tr>
-        <tr id="D2">
-            <td class="col1">D2</td>
-        </tr>
-        <tr id="D19">
-            <td class="col1">D19</td>
-        </tr>
-        <tr id="VWA">
-            <td class="col1">vWA</td>
-        </tr>
-        <tr id="TPO">
-            <td class="col1">TPO</td>
-        </tr>
-        <tr id="D18">
-            <td class="col1">D18</td>
-        </tr>
-        <tr id="D5">
-            <td class="col1">D5</td>
-        </tr>
-        <tr id="FGA">
-            <td class="col1">FGA</td>
-        </tr>
-    </table>
-</div>
-<div id="result" class="hidden">
-    <table>
-        <tr>
-            <td class="col1"><div id="saveBtn" class="hidden"><span class="button save">save</span></div></td>
-            <td colspan="3">Likelihood Ratio</td>
-        </tr>
-        <tr class="names">
-            <td class="col1"></td>
-            <td></td>
-        </tr>
-        <tr class="header">
-            <td class="col1"></td>
-            <td></td>
-        </tr>
-        <tr id="D8">
-            <td class="col1">D8</td>
-        </tr>
-        <tr id="D21">
-            <td class="col1">D21</td>
-        </tr>
-        <tr id="D7">
-            <td class="col1">D7</td>
-        </tr>
-        <tr id="CSF">
-            <td class="col1">CSF</td>
-        </tr>
-        <tr id="D3">
-            <td class="col1">D3</td>
-        </tr>
-        <tr id="TH0">
-            <td class="col1">TH0</td>
-        </tr>
-        <tr id="D13">
-            <td class="col1">D13</td>
-        </tr>
-        <tr id="D16">
-            <td class="col1">D16</td>
-        </tr>
-        <tr id="D2">
-            <td class="col1">D2</td>
-        </tr>
-        <tr id="D19">
-            <td class="col1">D19</td>
-        </tr>
-        <tr id="vWA">
-            <td class="col1">vWA</td>
-        </tr>
-        <tr id="TPO">
-            <td class="col1">TPO</td>
-        </tr>
-        <tr id="D18">
-            <td class="col1">D18</td>
-        </tr>
-        <tr id="D5">
-            <td class="col1">D5</td>
-        </tr>
-        <tr id="FGA">
-            <td class="col1">FGA</td>
-        </tr>
-        <tr id="total">
-            <td class="col1"><b>total</b></td>
-        </tr>
-    </table>
-</div>
+	<div id="inputs">
+		<table>
+			<thead>
+				<tr class="names">
+					<td class="col1"></td>
+					<td>Detected</td>
+					<td>Unattributed</td>
+					<td>Assumed</td>
+					<td>Suspected</td>
+				</tr>
+
+				<tr class="header">
+					<td class="col1"></td>
+					<td class="addSample"></td>
+					<td></td>
+					<td class="addSample"></td>
+					<td class="addSample"></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="col1"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div id="result" class="hidden">
+		<table>
+			<thead>
+				<tr>
+					<td class="col1">
+						<div id="saveBtn" class="hidden"><span class="button save">save</span></div>
+					</td>
+					<td colspan="3">Likelihood Ratio</td>
+				</tr>
+				<tr class="names">
+					<td class="col1"></td>
+					<td></td>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr class="header">
+					<td class="col1"></td>
+					<td></td>
+				</tr>
+			</tbody>
+
+			<tfoot>
+				<tr>
+					<td class="col1"><b>total</b></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>
 
 <div id="sampleSelector" class="hidden"></div>
@@ -241,37 +171,41 @@
 
 
 <div id="splash">
-    <h1 style="position: relative;">
-        <img alt="Lab Retriever" src="lab_retriever_icon.png" style="position: absolute; right:30; top:-10; height:100px"/>
-        <span id="programName">Lab Retriever</span><br/>
-    </h1>
+	<h1 style="position: relative;">
+		<img alt="Lab Retriever" src="lab_retriever_icon.png"
+		     style="position: absolute; right:30; top:-10; height:100px"/>
+		<span id="programName">Lab Retriever</span><br/>
+	</h1>
 
-    <h2>A Program to Calculate LRs with Drop-out</h2>
+	<h2>A Program to Calculate LRs with Drop-out</h2>
 
-    <h3>
-    Conceived by:
-        <ul>
-            <li>Keith Inman</li>
-            <li>Kirk Lohmueller</li>
-            <li>Norah Rudin</li>
-        </ul>
-    Executed by:
-    <ul>
-        <li>Ken Cheng</li>
-        <li>Luke Inman-Semerau</li>
-	    <li>Adam Kirschner</li>
-	    <li>Chris Robinson</li>
-    </ul>
-    </h3>
-    <h4>
-    A <img alt="SCIEG" src="img/SCIEG_logo.png" width="100"/> Productions Development
-    </h4>
-    <p>Funded in part by a CAC McLaughlin Fund Grant</p>
-    <p>Following Balding, DJ, and Buckleton, J. Interpreting low template DNA profiles, FSI:Genetics 4 (2009)
-        <!--br/>
-        For the most recent updates by Dr. Balding, <a href="http://drbalding.com">please click here</a -->
-        </p>
-    <p>For research use only</p>
+	<h3>
+		Conceived by:
+		<ul>
+			<li>Keith Inman</li>
+			<li>Kirk Lohmueller</li>
+			<li>Norah Rudin</li>
+		</ul>
+		Executed by:
+		<ul>
+			<li>Ken Cheng</li>
+			<li>Luke Inman-Semerau</li>
+			<li>Adam Kirschner</li>
+			<li>Chris Robinson</li>
+		</ul>
+	</h3>
+	<h4>
+		A <img alt="SCIEG" src="img/SCIEG_logo.png" width="100"/> Productions Development
+	</h4>
+
+	<p>Funded in part by a CAC McLaughlin Fund Grant</p>
+
+	<p>Following Balding, DJ, and Buckleton, J. Interpreting low template DNA profiles, FSI:Genetics 4 (2009)
+		<!--br/>
+		For the most recent updates by Dr. Balding, <a href="http://drbalding.com">please click here</a -->
+	</p>
+
+	<p>For research use only</p>
 </div>
 
 <textarea id="status" class="output hidden"></textarea>
