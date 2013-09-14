@@ -111,8 +111,8 @@ def load(file):
         fileData.append(d)
     return fileData
 
-if __name__ == "__main__":
-    path = "/Users/crob/Desktop/removed_loci_test.csv"
-    print load(path)
+#if __name__ == "__main__":
+#    path = "/Users/crob/Desktop/removed_loci_test.csv"
+#    print load(path)
 
 window.load = load
