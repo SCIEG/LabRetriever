@@ -86,8 +86,10 @@ function displayOutput( data ) {
 
 	var dataSize = 0;
 	var races = []; //"AFRICAN_AMERICAN", "CAUCASIAN", "HISPANIC"
-	for( r in data ) {
-		races.push( r );
+	for( var race in data ) {
+		if( data.hasOwnProperty( race ) ) {
+			races.push( race );
+		}
 	}
 	races.sort();
 	$( "#result tr" ).each( function( idx, value ) {
@@ -97,12 +99,16 @@ function displayOutput( data ) {
 		try {
 			var row = $( value );
 			var cols = row.find( 'td' );
-			cols = addColumns( cols, races.length + 1 );
-
+			cols = addColumns( cols, races.length + 2 );
 
 			$.each( races, function( i, v ) {
-				if( data[v] )
-					cols[1 + i].innerHTML = idx == 1 ? v : data[v][value.id] || '';
+				if( data[v] ) {
+					var calculatedValue = ( idx == 1 )
+						? v
+						: data[v][row.data( 'loci' )] || '';
+
+					cols[1 + i].innerHTML = calculatedValue;
+				}
 			} );
 
 			// trim extra columns from displaying is running again.
@@ -370,13 +376,17 @@ function addAnotherDO( e ) {
 
 function renderLociOnTable( fileData ) {
 	var $tbody = $( "#inputs table tbody" );
+	var $resultsTbody = $( "#result table tbody" );
 
 	for( var i = 0, len = fileData.loci.length; i < len; i += 1 ) {
 		var locus = fileData.loci[ i ];
 
-		var newRow = $( "<tr><td>" + locus + "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>" );
+		var newRow = $( '<tr><td class="col1">' + locus + "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>" );
+		var newRow2 = $( '<tr><td class="col1">' + locus + "</td></tr>" );
 		newRow.data( 'loci', locus );
+		newRow2.data( 'loci', locus );
 		$tbody.append( newRow );
+		$resultsTbody.append( newRow2 );
 	}
 
 	console.log( fileData );
