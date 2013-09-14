@@ -16,7 +16,6 @@ def createLabR():
     print >> out, "Drop-out rate,"
     print >> out, "IBD Probs,,,"
     print >> out, "Race,"
-    for
     print >> out, "%s_Assumed,"
     print >> out, "%s_Suspected,"
     print >> out, "%s_Unattributed,"

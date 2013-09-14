@@ -17,6 +17,31 @@ var sampleNameIdNum = 0;
 function displayData() {
 	var addedColumn = false;
 
+    $( "#inputs thead tr" ).each( function( idx, row ) {
+        var samples = SCIEG.selectedSamples[SCIEG.activeColumn];
+
+        var $row = $( row );
+        var cols = $row.find( 'td' );
+        var colIdx = SCIEG.colMap[SCIEG.activeColumn] + samples.length - 1;
+
+
+
+        if( idx === 0 && samples.length > 1 ) {
+            var html = "<td>" + SCIEG.activeColumn.capitalize() + "</td>";
+
+            $( cols[colIdx - 1] ).after( html );
+
+            addedColumn = true;
+
+            return;
+        }
+        cols = addColumns( cols, colIdx );
+        if( addedColumn ) {
+            $( cols[colIdx - 1] ).after( "<td></td>" );
+            cols = $row.find( 'td' );
+        }
+    });
+
 	$( "#inputs tbody tr" ).each( function( idx, row ) {
 		var samples = SCIEG.selectedSamples[SCIEG.activeColumn];
 
@@ -232,7 +257,9 @@ function removeSample( el ) {
 
 	var sample = SCIEG.selectedSamples[SCIEG.colMap[sampleCol]].pop();
 	SCIEG.usedSamples.splice( SCIEG.usedSamples.indexOf( sample['name'] ), 1 );
-	if( SCIEG.colMap[sampleCol] != 'suspected' ) calculateUnattributed();
+	if( SCIEG.colMap[sampleCol] != 'suspected' ) {
+        calculateUnattributed();
+    }
 	updateSampleSelect();
 }
 
