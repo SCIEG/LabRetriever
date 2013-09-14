@@ -111,10 +111,4 @@ def load(file):
 		fileData.append(d)
 	return fileData
 
-
-if __name__ == "__main__":
-	path = "/Users/adam/Downloads/Lab Ret Test Evidence blank loci datafile.csv"
-	x = load(path)
-	print x
-
-# window.load = load
+window.load = load
