@@ -389,5 +389,5 @@ function renderLociOnTable( fileData ) {
 		$resultsTbody.append( newRow2 );
 	}
 
-	console.log( fileData );
+//	console.log( fileData );
 }
