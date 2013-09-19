@@ -14,14 +14,14 @@ $().ready( function () {
 		SCIEG.toSave = [
 			["", "Detected", "Unattributed", "Assumed", "Suspected", "", "Likelihood Ratio"]
 		];
-		var b = SCIEG.util.busy();
+		var busy = SCIEG.util.busy();
 		try {
 			var files = SCIEG.exporter.createLabRcsv();
 		} catch ( e ) {
 			log( "creating csv failed: " + e.toString() );
 			files = [];
 		}
-		if ( files.length == 0 ) b();
+		if ( files.length == 0 ) busy();
 		SCIEG.currentResults = [];
 		var executable = Ti.Filesystem.getFile( Ti.Filesystem.getApplicationDirectory(), "labr" ).nativePath();
 		try {
@@ -99,13 +99,13 @@ $().ready( function () {
 								SCIEG.toSave[i + SCIEG.saveRowOffset].push( vv.textContent );
 							} );
 						} );
-						b();
+						busy();
 					} else {
 						if ( SCIEG.resultsFoundTries++ > 1000 ) {
 							clearInterval( SCIEG.resultsInterval );
 							log( "giving up looking for results" );
 							SCIEG.util.status( "Calculation took too long, it may have died? Try again." );
-							b();
+							busy();
 							SCIEG.Process.kill();
 						}
 //                            log("file does not exist: " + outputName);
@@ -115,7 +115,7 @@ $().ready( function () {
 			}
 		} catch ( e ) {
 			log( e.toString() );
-			b();
+			busy();
 		}
 	} );
 

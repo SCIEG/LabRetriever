@@ -24,11 +24,8 @@ function displayData() {
         var cols = $row.find( 'td' );
         var colIdx = SCIEG.colMap[SCIEG.activeColumn] + samples.length - 1;
 
-
-
         if( idx === 0 && samples.length > 1 ) {
             var html = "<td>" + SCIEG.activeColumn.capitalize() + "</td>";
-
             $( cols[colIdx - 1] ).after( html );
 
             addedColumn = true;
@@ -36,10 +33,13 @@ function displayData() {
             return;
         }
         cols = addColumns( cols, colIdx );
+
         if( addedColumn ) {
             $( cols[colIdx - 1] ).after( "<td></td>" );
             cols = $row.find( 'td' );
         }
+
+
     });
 
 	$( "#inputs tbody tr" ).each( function( idx, row ) {
@@ -53,17 +53,9 @@ function displayData() {
 			colIdx += Math.max( 0, SCIEG.selectedSamples['assumed'].length - 1 );
 		}
 
-		if( idx === 0 && samples.length > 1 ) {
-			var html = "<td>" + SCIEG.activeColumn.capitalize() + "</td>";
-
-			$( cols[colIdx - 1] ).after( html );
-
-			addedColumn = true;
-
-			return;
-		}
-
-		cols = addColumns( cols, colIdx );
+		if( idx > 0 && samples.length < 2 ) {
+            cols = addColumns( cols, colIdx );
+        }
 
 		if( addedColumn ) {
 			$( cols[colIdx - 1] ).after( "<td></td>" );
@@ -100,10 +92,10 @@ function displayData() {
 			}
 		} );
 
-		if( idx === 0 ) {
-			cell.addClass( "sampleName" );
-			$( '.sampleName' ).mouseenter( showRemove ).mouseleave( hideRemove );
-		}
+        if( idx === 0 ) {
+            cell.addClass( "sampleName" );
+            $( '.sampleName' ).mouseenter( showRemove ).mouseleave( hideRemove );
+        }
 	} );
 }
 
@@ -320,7 +312,6 @@ function selectFile() {
 				if( SCIEG.activeColumn == "detected" ) {
 					renderLociOnTable( fileData );
 				}
-
 				SCIEG.selectedSamples[SCIEG.activeColumn].push( fileData );
 				displayData();
 				calculateUnattributed();
@@ -331,6 +322,7 @@ function selectFile() {
 				break;
 			}
 		}
+        appendAddSampleButtons();
 	} catch( e ) {log( "selectFile exception: " + e.toString() )}
 }
 
@@ -357,6 +349,7 @@ function chooseSample( el ) {
 		if( col > 3 ) col -= Math.max( SCIEG.selectedSamples[SCIEG.colMap[3]].length - 1, 0 );
 		if( col > 4 ) col = 4;
 		SCIEG.activeColumn = SCIEG.colMap[col];
+
 	} catch( e ) { log( "chooseSample exception: " + e.toString() );}
 }
 
@@ -374,16 +367,31 @@ function updateSampleSelect() {
 	} );
 	$( '#sampleSelector' ).html( heading ).append( list );
 	$( '#sampleSelector .fileSelect li' ).click( selectFile );
+
 }
 
 function fileLoaded() {
-	$( '#inputs .addSample' ).each( function( idx, value ) {
-		$( value ).html( "<a href='#' onclick='chooseSample(this)'><img src='img/plus.png'/></a>" );
-	} );
+    appendAddSampleButtons();
 	updateSampleSelect();
 	$( '#loadFile' ).html( "Load another file" );
 	$( '#runner' ).removeClass( 'hidden' );
 	SCIEG.util.status( 'file loaded.' );
+}
+
+function appendAddSampleButtons() {
+    var addSampleButtons = $( '#inputs .addSample' );
+    addSampleButtons.each( function( idx, value ) {
+        var hasDetectedSample = SCIEG.selectedSamples.detected.length > 0;
+        var hasSuspectedSample = SCIEG.selectedSamples.suspected.length > 0;
+        if((idx == 0 && hasDetectedSample) || (idx == addSampleButtons.length - 1 && hasSuspectedSample)) {
+            return true;
+        } else if(idx == 0){
+            $( value ).html( "<a href='#' onclick='chooseSample(this)'><img src='img/plus.png'/></a>" );
+        }
+        if(idx > 0 && SCIEG.selectedSamples.detected.length > 0) {
+            $( value ).html( "<a href='#' onclick='chooseSample(this)'><img src='img/plus.png'/></a>" );
+        }
+    } );
 }
 
 function addAnotherDO( e ) {
