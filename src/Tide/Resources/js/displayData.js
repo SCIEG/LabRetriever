@@ -370,12 +370,12 @@ function updateSampleSelect() {
 
 }
 
-function fileLoaded() {
+function fileLoaded(fileName) {
     appendAddSampleButtons();
 	updateSampleSelect();
 	$( '#loadFile' ).html( "Load another file" );
 	$( '#runner' ).removeClass( 'hidden' );
-	SCIEG.util.status( 'file loaded.' );
+	SCIEG.util.status( 'file loaded.', fileName);
 }
 
 function appendAddSampleButtons() {

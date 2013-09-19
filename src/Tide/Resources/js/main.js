@@ -129,13 +129,13 @@ $().ready( function () {
 						busy();
 						return;
 					}
-					var n = names[0];
-					if ( n.length == 0 ) {
+					var name = names[0];
+					if ( name.length == 0 ) {
 						// somehow didn't enter a file name?
 						busy();
 						return;
 					}
-					var f = Ti.Filesystem.getFile( n );
+					var f = Ti.Filesystem.getFile( name );
 					if ( f.exists() ) {
 						if ( SCIEG.fileData === undefined ){
 							SCIEG.fileData = [];
@@ -145,7 +145,7 @@ $().ready( function () {
 
 						if ( data ) {
 							SCIEG.fileData = SCIEG.fileData.concat( data.splice( 0 ) );
-							fileLoaded();
+							fileLoaded(name);
 							calculateUnattributed();
 							$( '.loadFile' ).html( 'load another file' );
 							busy();
