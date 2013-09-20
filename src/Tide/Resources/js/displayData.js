@@ -412,17 +412,21 @@ function addAnotherDO( e ) {
 function renderLociOnTable( fileData ) {
 	var $tbody = $( "#inputs table tbody" );
 	var $resultsTbody = $( "#result table tbody" );
+    var rows = $tbody.find("tr");
+//    if(rows.length == 1) {
+        for( var i = 0, len = fileData.loci.length; i < len; i += 1 ) {
+            var locus = fileData.loci[ i ];
+            if($("#i_" + locus).length == 0) {
+                var newRow = $( '<tr id="i_'+locus+'"><td class="col1">' + locus + "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>" );
+                var newRow2 = $( '<tr  id="r_'+locus+'"><td class="col1">' + locus + "</td></tr>" );
+                newRow.data( 'loci', locus );
+                newRow2.data( 'loci', locus );
+                $tbody.append( newRow );
+                $resultsTbody.append( newRow2 );
+            }
+        }
+//    }
 
-	for( var i = 0, len = fileData.loci.length; i < len; i += 1 ) {
-		var locus = fileData.loci[ i ];
-
-		var newRow = $( '<tr><td class="col1">' + locus + "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>" );
-		var newRow2 = $( '<tr><td class="col1">' + locus + "</td></tr>" );
-		newRow.data( 'loci', locus );
-		newRow2.data( 'loci', locus );
-		$tbody.append( newRow );
-		$resultsTbody.append( newRow2 );
-	}
 
 //	console.log( fileData );
 }
