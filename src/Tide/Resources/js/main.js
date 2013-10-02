@@ -101,7 +101,7 @@ $().ready( function () {
 						} );
 						busy();
 					} else {
-						if ( SCIEG.resultsFoundTries++ > 1000 ) {
+						if ( SCIEG.resultsFoundTries++ > 36000 ) {
 							clearInterval( SCIEG.resultsInterval );
 							log( "giving up looking for results" );
 							SCIEG.util.status( "Calculation took too long, it may have died? Try again." );

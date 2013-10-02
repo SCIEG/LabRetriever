@@ -13,14 +13,16 @@ SCIEG.util.busy = function() {
 SCIEG.util.fileNames = [];
 
 SCIEG.util.status = function(msg, filePath) {
-    var fileName = filePath.replace(/^.*(\\|\/|\:)/, '');
     var $status = $('#running');
-    SCIEG.util.fileNames.push(fileName)
-    var content = "<ol>";
-    $.each(SCIEG.util.fileNames, function(index, name) {
-        content += "<li>" + name + "</li>";
-    });
-    content += "</ol>";
+    if(filePath) {
+        var fileName = filePath.replace(/^.*(\\|\/|\:)/, '');
+        SCIEG.util.fileNames.push(fileName)
+        var content = "<ol>";
+        $.each(SCIEG.util.fileNames, function(index, name) {
+            content += "<li>" + name + "</li>";
+        });
+        content += "</ol>";
+    }
     $status.html(msg).css('opacity', 1);
     $status.attr("title", "File(s) Loaded");
     $status.attr("data-content", content);

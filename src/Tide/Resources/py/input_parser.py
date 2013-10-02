@@ -71,7 +71,7 @@ def load(file):
     for r in csvr:
         locus = locusName(r[keys['locus']].strip().upper())
 
-        if len(locus) == 0:
+        if len(locus) == 0 or string.lower(locus) == "amel":
             continue
 
         als = []
