@@ -119,7 +119,6 @@ namespace LabRetriever {
                     double partialOneIBDLogLikelihood = logProbGivenAllele +
                             logProbHavingRandomAllele;
 
-                    // TODO: original code divides probability by 2. Check if correct.
                     oneIBDLogLikelihood = addLogProbability(oneIBDLogLikelihood,
                             partialOneIBDLogLikelihood);
                     numComplete += 1;
