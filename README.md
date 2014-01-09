@@ -7,7 +7,7 @@ Currently 1.1.5 beta release
 [Windows](https://github.com/SCIEG/LabRetriever/releases/download/1.1.5/LabRetriever-1.1.5.msi)
 
 Linux (coming maybe? soon for Ubuntu)
-
+x
 # Building it yourself
 
 This is for developers who want to make additions or fixes to the project.
@@ -37,4 +37,5 @@ Import the Tide project (src/Tide) in TideSDK Developer.
 Click "Test & Package" tab
 
 Click "Launch App"
+
 

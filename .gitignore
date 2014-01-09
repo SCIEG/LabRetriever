@@ -7,6 +7,6 @@ labr
 .idea/
 *.iml
 
-src/Tide/labr.dSYM/
-src/Tide/packages/
-src/Tide/dist/
+src/labr
+src/packages/
+src/dist/

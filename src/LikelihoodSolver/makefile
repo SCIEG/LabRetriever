@@ -1,2 +1,0 @@
-all:
-	g++ -I ../../lib/boost_1_53_0 -g -c CachingSolver.cpp NoSuspectFourUnknownsLikelihoodSolver.cpp NoSuspectOneUnknownLikelihoodSolver.cpp NoSuspectThreeUnknownsLikelihoodSolver.cpp NoSuspectTwoUnknownsLikelihoodSolver.cpp OneSuspectNoUnknownsLikelihoodSolver.cpp OneSuspectOneUnknownLikelihoodSolver.cpp OneSuspectThreeUnknownsLikelihoodSolver.cpp OneSuspectTwoUnknownsLikelihoodSolver.cpp LikelihoodSolver.cpp
