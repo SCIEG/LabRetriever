@@ -27,6 +27,7 @@ SCIEG.Process.runProcess = function ( val ) {
 	self.running = true;
 	self.interval = setInterval( self._checkStatus, 300 );
 };
+
 SCIEG.Process._checkStatus = function () {
 	try {
 		var self = SCIEG.Process;

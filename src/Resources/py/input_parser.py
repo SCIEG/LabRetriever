@@ -8,16 +8,18 @@ VALID_LOCII = ["D8", "D21", "D7", "CSF", "D3", "TH0", "D13", "D16", "D2", "D19",
 def locusName(name):
     if string.lower(name).startswith("vwa"):
         return "vWA"
-    if name.startswith('D'):
-        return name.split("S")[0]
-    if name.startswith('CSF'):
-        return 'CSF'
-    if name.startswith('TPO'):
-        return 'TPO'
-    if name.startswith('TH0') or name.startswith('THO'):
-        return 'TH0'
-
     return name
+
+    # if name.startswith('D'):
+    #     return name.split("S")[0]
+    # if name.startswith('CSF'):
+    #     return 'CSF'
+    # if name.startswith('TPO'):
+    #     return 'TPO'
+    # if name.startswith('TH0') or name.startswith('THO'):
+    #     return 'TH0'
+
+
 
 
 def getKeys(csv):

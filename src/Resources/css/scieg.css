@@ -88,3 +88,10 @@ input[name='pdo'] { margin-bottom: 3px; }
 #splash img[alt="SCIEG"] { vertical-align: text-bottom; }
 
 #total td:not([class='col1']) { font-weight: bold; border-top: 1px solid black; }
+
+.whereItComesFrom {
+    float: left;
+    font-size: 12px;
+    padding-top: 10px;
+    width: 500px;
+}

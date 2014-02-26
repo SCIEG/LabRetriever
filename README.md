@@ -27,10 +27,16 @@ On windows use MinGW to install make/gcc (put MinGW on your path and run mingw32
 
 ## Building / Running
 
-Compile the labr program:
+Clone LikelihoodSolver
+    https://github.com/SCIEG/LikelihoodSolver
 
-    cd src
-    make
+    Make sure your directory structure is:
+
+        LabRetriever/
+        LikelihoodSolver/
+
+Compile the labr program:
+    Run build-solver.sh or .cmd
 
 Import the Tide project (src/Tide) in TideSDK Developer.
 

@@ -77,6 +77,8 @@ $().ready( function () {
 				SCIEG.toSave.push( ["P(DI)", "P(DO)", "IBD Probabilities"] );
 				SCIEG.toSave.push( [ $( '#pdi' ).val(), $( 'input[name="pdo"]' ).val(),
 					$( '#alleles0' ).val() + ", " + $( '#alleles1' ).val() + ", " + $( '#alleles2' ).val()] );
+
+//                console.log(SCIEG.toSave)
 				SCIEG.resultsInterval = setInterval( function () {
 					var f = Ti.Filesystem.getFile( Ti.Filesystem.getApplicationDataDirectory(), outputName );
 					if ( f.exists() ) {
@@ -99,6 +101,7 @@ $().ready( function () {
 								SCIEG.toSave[i + SCIEG.saveRowOffset].push( vv.textContent );
 							} );
 						} );
+                        addWhereTheStatsComeFromFooter();
 						busy();
 					} else {
 						if ( SCIEG.resultsFoundTries++ > 36000 ) {
@@ -173,7 +176,18 @@ $().ready( function () {
 		}
 	} );
 
+    var addWhereTheStatsComeFromFooter = function() {
+        SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( ["NIST 1036 U.S. Population Dataset - 29 autosomal STR loci and 23 Y-STR loci found at http://www.cstl.nist.gov/div831/strbase/NISTpop.htm"] );
+        SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( ["Butler, J.M., Hill, C.R., Coble, M.D. (2012) Variability of new STR loci and kits in U.S. population groups.  Profiles in DNA http://www.cstl.nist.gov/div831/strbase/pub_pres/Profiles-in-DNA_Variability-of-New-STR-Loci.pdf"] );
+        SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( ["http://www.promega.com/resources/articles/profiles-in-dna/2012/variability-of-new-str-loci-and-kits-in-us-population-groups/"] );
+    };
+
 	$( '#saveBtn span.button' ).click( function () {
+
 		Ti.UI.currentWindow.openSaveAsDialog( function ( paths ) {
 				writeOutput( paths[0], SCIEG.toSave );
 			},
