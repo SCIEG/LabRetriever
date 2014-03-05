@@ -178,8 +178,8 @@ $().ready( function () {
 
     var addWhereTheStatsComeFromFooter = function() {
         SCIEG.toSave.push( [""] );
-        SCIEG.toSave.push( ["NIST 1036 U.S. Population Dataset - 29 autosomal STR loci and 23 Y-STR loci found at http://www.cstl.nist.gov/div831/strbase/NISTpop.htm"] );
-        SCIEG.toSave.push( ["Butler, J.M., Hill, C.R., Coble, M.D. (2012) Variability of new STR loci and kits in U.S. population groups.  Profiles in DNA http://www.cstl.nist.gov/div831/strbase/pub_pres/Profiles-in-DNA_Variability-of-New-STR-Loci.pdf"] );
+        SCIEG.toSave.push( ["\"NIST 1036 U.S. Population Dataset - 29 autosomal STR loci and 23 Y-STR loci found at http://www.cstl.nist.gov/div831/strbase/NISTpop.htm\""] );
+        SCIEG.toSave.push( ["\"Butler\, J.M.\, Hill, C.R.\, Coble, M.D. (2012) Variability of new STR loci and kits in U.S. population groups.  Profiles in DNA http://www.cstl.nist.gov/div831/strbase/pub_pres/Profiles-in-DNA_Variability-of-New-STR-Loci.pdf\""] );
         SCIEG.toSave.push( ["http://www.promega.com/resources/articles/profiles-in-dna/2012/variability-of-new-str-loci-and-kits-in-us-population-groups/"] );
     };
 
