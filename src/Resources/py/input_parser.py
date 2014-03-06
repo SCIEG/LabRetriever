@@ -49,6 +49,12 @@ def getKeys(csv):
 
     return keys
 
+def get_file_name(file, name):
+    if file == name:
+        return file
+    else:
+        return file + " | " + name
+
 
 def load(file):
     """
@@ -100,9 +106,9 @@ def load(file):
         name = r[keys.get('name', 0)].strip()
 
         if keys.has_key('file') and len(r) > keys['file']:
-            name = r[keys['file']] + " | " + name
+            name = get_file_name(r[keys['file']], name)
         else:
-            name = file + " | " + name
+            name = get_file_name(file, name)
 
         data.setdefault(name, {})[locus] = als
 
