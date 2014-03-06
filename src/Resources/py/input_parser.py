@@ -37,6 +37,8 @@ def getKeys(csv):
             keys['locus'] = idx
         elif "call" == i:
             keys.setdefault('call', []).append(idx)
+        elif "allele" in i:
+            keys.setdefault('call', []).append(idx)
         elif "rfu" == i:
             keys.setdefault('rfu', []).append(idx)
         elif keys.has_key('name') and "allele" in i:
@@ -56,7 +58,13 @@ def load(file):
      """
     global VALID_LOCII
 
-    csvr = csv.reader(open(file).read().splitlines())
+    read__splitlines = open(file).read().splitlines()
+    lines_to_use = []
+    for line in read__splitlines:
+        if len(line.strip()) > 0:
+            lines_to_use.append(line)
+
+    csvr = csv.reader(lines_to_use)
 
     if file.endswith('.csv'):
         file = file[0:-4]
@@ -89,7 +97,7 @@ def load(file):
             else:
                 break
 
-        name = r[keys['name']].strip()
+        name = r[keys.get('name', 0)].strip()
 
         if keys.has_key('file') and len(r) > keys['file']:
             name = r[keys['file']] + " | " + name
@@ -111,10 +119,11 @@ def load(file):
         d['name'] = keyName
         d['loci'] = loci_names
         fileData.append(d)
+
     return fileData
 
-#if __name__ == "__main__":
-#    path = "/Users/crob/Desktop/removed_loci_test.csv"
+# if __name__ == "__main__":
+#    path = "/Users/crob/Desktop/Brady samples for LR ST fillters off.csv"
 #    print load(path)
 
 window.load = load
