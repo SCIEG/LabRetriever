@@ -382,7 +382,7 @@ function appendAddSampleButtons() {
     var addSampleButtons = $( '#inputs .addSample' );
     addSampleButtons.each( function( idx, value ) {
         var hasDetectedSample = SCIEG.selectedSamples.detected.length > 0;
-        var hasSuspectedSample = SCIEG.selectedSamples.suspected.length > 0;
+        var hasSuspectedSample = SCIEG.selectedSamples.suspected.length > 1;
         if((idx == 0 && hasDetectedSample) || (idx == addSampleButtons.length - 1 && hasSuspectedSample)) {
             return true;
         } else if(idx == 0){
