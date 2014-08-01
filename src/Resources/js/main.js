@@ -26,9 +26,11 @@ $().ready( function () {
         if ( files.length == 0 ) busy();
         SCIEG.currentResults = [];
         var executable = Ti.Filesystem.getFile( Ti.Filesystem.getApplicationDirectory(), "labr/labr" ).nativePath();
+        var likelihood1OptionText =  $( "#likelihood1 option:selected").text();
+        var likelihood2OptionText = $( "#likelihood2 option:selected").text();
         try {
             for ( var i = 0; i < files.length; i++ ) {
-                var outputName = "output" + i + ".csv";
+                var outputName = "output" + (new Date().getTime()) + ".csv";
                 var process = [executable, files[i],
                     Ti.Filesystem.getFile( Ti.Filesystem.getApplicationDataDirectory(), outputName ).nativePath(),
                     $( "#likelihood1" ).val(), $( "#likelihood2" ).val()];
@@ -49,9 +51,9 @@ $().ready( function () {
                 SCIEG.Process.runProcess( process );
                 SCIEG.resultsFoundTries = 0;
                 SCIEG.toSave = [
-                    ['Case ID:', $( '#caseInput' ).val()],
-                    ['Sample ID:', $( '#sampleInput' ).val()],
-                    ['Analyst:', $( '#analystInput' ).val()],
+                    ['Case ID: ' + $( '#caseInput' ).val()],
+                    ['Sample ID: ' + $( '#sampleInput' ).val()],
+                    ['Analyst: ' + $( '#analystInput' ).val()],
                     []
                 ];
 
@@ -82,7 +84,7 @@ $().ready( function () {
                         $( '#alleles0' ).val() + ", " + $( '#alleles1' ).val() + ", " + $( '#alleles2' ).val()] );
 
                 var file_dir = Ti.Filesystem.getApplicationDataDirectory();
-                runResultsTest(outputName, process, busy, file_dir);
+                runResultsTest(outputName, process, busy, file_dir, likelihood1OptionText, likelihood2OptionText);
 
             }
         } catch ( e ) {
@@ -91,7 +93,7 @@ $().ready( function () {
         }
     } );
 
-    var runResultsTest = function(outputName, process, busy, file_dir) {
+    var runResultsTest = function(outputName, process, busy, file_dir, likelihood1, likelihood2) {
         var _this = this;
         SCIEG.resultsInterval = setTimeout( function () {
             var f = Ti.Filesystem.getFile(file_dir , outputName );
@@ -115,7 +117,7 @@ $().ready( function () {
                         SCIEG.toSave[i + SCIEG.saveRowOffset].push( vv.textContent );
                     } );
                 } );
-                addWhereTheStatsComeFromFooter();
+                addWhereTheStatsComeFromFooter(likelihood1, likelihood2);
                 busy();
             } else {
                 clearTimeout( SCIEG.resultsInterval );
@@ -199,7 +201,10 @@ $().ready( function () {
         }
     } );
 
-    var addWhereTheStatsComeFromFooter = function() {
+    var addWhereTheStatsComeFromFooter = function(likelihood1, likelihood2) {
+        SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( ["Hypothesis 1: " + likelihood1] );
+        SCIEG.toSave.push( ["Hypothesis 2: " + likelihood2] );
         SCIEG.toSave.push( [""] );
         SCIEG.toSave.push( ["\"NIST 1036 U.S. Population Dataset - 29 autosomal STR loci and 23 Y-STR loci found at http://www.cstl.nist.gov/div831/strbase/NISTpop.htm\""] );
         SCIEG.toSave.push( ["\"Butler\, J.M.\, Hill, C.R.\, Coble, M.D. (2012) Variability of new STR loci and kits in U.S. population groups.  Profiles in DNA http://www.cstl.nist.gov/div831/strbase/pub_pres/Profiles-in-DNA_Variability-of-New-STR-Loci.pdf\""] );

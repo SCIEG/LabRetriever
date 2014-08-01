@@ -103,12 +103,12 @@ def load(file):
             else:
                 break
 
-        name = r[keys.get('name', 0)].strip()
+        name = html_escape(r[keys.get('name', 0)].strip())
 
-        if keys.has_key('file') and len(r) > keys['file']:
-            name = get_file_name(r[keys['file']], name)
-        else:
-            name = get_file_name(file, name)
+        # if keys.has_key('file') and len(r) > keys['file']:
+        #     name = get_file_name(r[keys['file']], name)
+        # else:
+        #     name = get_file_name(file, name)
 
         data.setdefault(name, {})[locus] = als
 
@@ -128,8 +128,27 @@ def load(file):
 
     return fileData
 
+html_escape_table = {
+    "&": "",
+    '"': "",
+    "'": "",
+    ">": "",
+    "<": "",
+    "@": "",
+    "!": "",
+    "#": "",
+    "%": "",
+    "^": "",
+    "*": "",
+    ",": ""
+}
+
+def html_escape(text):
+    """Produce entities within text."""
+    return "".join(html_escape_table.get(c,c) for c in text)
+
 # if __name__ == "__main__":
-#    path = "/Users/crob/Desktop/Brady samples for LR ST fillters off.csv"
+#    path = "/Users/crob/Desktop/LR/bad_sample_names_test.csv"
 #    print load(path)
 
 window.load = load

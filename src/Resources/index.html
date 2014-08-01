@@ -74,35 +74,57 @@
 	<h5>Likelihood Ratio</h5>
 
 	<ul>
-		<li>H1 <select id="likelihood1">
-			<option value="10">1 S, 0 UNK</option>
-			<option value="11">1 S, 1 UNK</option>
-			<option value="12">1 S, 2 UNK</option>
-            <option value="13">1 S, 3 UNK</option>
+		<li>H1
+            <select id="likelihood1">
+                <option value="s0">NEW 1 S, 0 UNK</option>
+                <option value="s1">NEW 1 S, 1 UNK</option>
+                <option value="s2">NEW 1 S, 2 UNK</option>
+                <option value="s3">NEW 1 S, 3 UNK</option>
+                <option value="s0">NEW 2 S, 0 UNK</option>
+                <option value="s1">NEW 2 S, 1 UNK</option>
+                <option value="s2">NEW 2 S, 2 UNK</option>
+                <option value="s3">NEW 2 S, 3 UNK</option>
 
+                <!-- OLD WAY -->
+                <option value="10">1 S, 0 UNK</option>
+                <option value="11">1 S, 1 UNK</option>
+                <option value="12">1 S, 2 UNK</option>
+                <option value="13">1 S, 3 UNK</option>
+                <option value="20">2 S, 0 UNK</option>
+                <option value="21">2 S, 1 UNK</option>
+                <option value="22">2 S, 2 UNK</option>
+		    </select>
+        </li>
 
-			<option value="20">2 S, 0 UNK</option>
-			<option value="21">2 S, 1 UNK</option>
-            <option value="22">2 S, 2 UNK</option>
-            <!--<option value="30">3 S, 0 UNK</option-->
-		</select></li>
+		<li>H2
+            <select id="likelihood2">
+                <option value="u1">NEW 0 S, 1 UNK</option>
+                <option value="u2">NEW 0 S, 2 UNK</option>
+                <option value="u3">NEW 0 S, 3 UNK</option>
+                <option value="u4">NEW 0 S, 4 UNK</option>
+                <option value="s0">NEW 1 S, 0 UNK</option>
+                <option value="s1">NEW 1 S, 1 UNK</option>
+                <option value="s2">NEW 1 S, 2 UNK</option>
+                <option value="s3">NEW 1 S, 3 UNK</option>
+                <option value="s0">NEW 2 S, 0 UNK</option>
+                <option value="s1">NEW 2 S, 1 UNK</option>
+                <option value="s2">NEW 2 S, 2 UNK</option>
+                <option value="s3">NEW 2 S, 3 UNK</option>
 
-		<li>H2 <select id="likelihood2">
-			<option value="01">0 S, 1 UNK</option>
-			<option value="02">0 S, 2 UNK</option>
-			<option value="03">0 S, 3 UNK</option>
-            <option value="04">0 S, 4 UNK</option>
-			<option value="10">1 S, 0 UNK</option>
-			<option value="11">1 S, 1 UNK</option>
-			<option value="12">1 S, 2 UNK</option>
-            <option value="13">1 S, 3 UNK</option>
-
-
-			<option value="20">2 S, 0 UNK</option>
-			<option value="21">2 S, 1 UNK</option>
-            <option value="22">2 S, 2 UNK</option>
-			<!--<option value="30">3 S, 0 UNK</option-->
-		</select></li>
+                <!-- OLD WAY -->
+                <option value="01">0 S, 1 UNK</option>
+                <option value="02">0 S, 2 UNK</option>
+                <option value="03">0 S, 3 UNK</option>
+                <option value="04">0 S, 4 UNK</option>
+                <option value="10">1 S, 0 UNK</option>
+                <option value="11">1 S, 1 UNK</option>
+                <option value="12">1 S, 2 UNK</option>
+                <option value="13">1 S, 3 UNK</option>
+                <option value="20">2 S, 0 UNK</option>
+                <option value="21">2 S, 1 UNK</option>
+                <option value="22">2 S, 2 UNK</option>
+		    </select>
+        </li>
 	</ul>
 
 </div>

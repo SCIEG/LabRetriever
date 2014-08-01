@@ -16,7 +16,7 @@ SCIEG.util.status = function(msg, filePath) {
     var $status = $('#running');
     if(filePath) {
         var fileName = filePath.replace(/^.*(\\|\/|\:)/, '');
-        SCIEG.util.fileNames.push(fileName)
+        SCIEG.util.fileNames.push(fileName);
         var content = "<ol>";
         $.each(SCIEG.util.fileNames, function(index, name) {
             content += "<li>" + name + "</li>";
