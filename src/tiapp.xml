@@ -2,8 +2,8 @@
 <ti:app xmlns:ti='http://ti.appcelerator.org'>
 <!-- These values are edited/maintained by TideSDK Developer -->
 <id>org.scieg</id>
-<name>LabRetriever_NewSolver2</name>
-<version>1.2.5</version>
+<name>LabRetriever</name>
+<version>2.0</version>
 <publisher>SCIEG</publisher>
 <url>https://github.com/SCIEG/LabRetriever</url>
 <icon>lab_retriever_icon.png</icon>
@@ -11,7 +11,7 @@
 <!-- Window Definition - these values can be edited -->
 <window>
 <id>initial</id>
-<title>LabRetriever_NewSolver2</title>
+<title>LabRetriever</title>
 <url>app://index.html</url>
 <width>700</width>
 <max-width>3000</max-width>
