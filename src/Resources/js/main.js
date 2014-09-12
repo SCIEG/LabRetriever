@@ -26,8 +26,8 @@ $().ready( function () {
         if ( files.length == 0 ) busy();
         SCIEG.currentResults = [];
         var executable = Ti.Filesystem.getFile( Ti.Filesystem.getApplicationDirectory(), "labr/labr" ).nativePath();
-        var likelihood1OptionText =  $( "#likelihood1 option:selected").text();
-        var likelihood2OptionText = $( "#likelihood2 option:selected").text();
+        SCIEG.likelihood1OptionText =  $( "#likelihood1 option:selected").text();
+        SCIEG.likelihood2OptionText = $( "#likelihood2 option:selected").text();
         try {
             for ( var i = 0; i < files.length; i++ ) {
                 var outputName = "output" + (new Date().getTime()) + ".csv";
@@ -47,7 +47,7 @@ $().ready( function () {
                         return;
                     }
                 }
-                console.log(process)
+//                console.log(process)
                 SCIEG.Process.runProcess( process );
                 SCIEG.resultsFoundTries = 0;
                 SCIEG.toSave = [
@@ -84,7 +84,7 @@ $().ready( function () {
                         $( '#alleles0' ).val() + ", " + $( '#alleles1' ).val() + ", " + $( '#alleles2' ).val()] );
 
                 var file_dir = Ti.Filesystem.getApplicationDataDirectory();
-                runResultsTest(outputName, process, busy, file_dir, likelihood1OptionText, likelihood2OptionText);
+                runResultsTest(outputName, process, busy, file_dir, SCIEG.likelihood1OptionText, SCIEG.likelihood2OptionText);
 
             }
         } catch ( e ) {
@@ -203,6 +203,8 @@ $().ready( function () {
 
     var addWhereTheStatsComeFromFooter = function(likelihood1, likelihood2) {
         SCIEG.toSave.push( [""] );
+        SCIEG.toSave.push( ["LabRetriever Version: " +Ti.API.getApplication().getVersion()] );
+        SCIEG.toSave.push( [""] );
         SCIEG.toSave.push( ["Hypothesis 1: " + likelihood1] );
         SCIEG.toSave.push( ["Hypothesis 2: " + likelihood2] );
         SCIEG.toSave.push( [""] );
@@ -212,7 +214,11 @@ $().ready( function () {
     };
 
     $( '#saveBtn span.button' ).click( function () {
-
+        console.log(SCIEG.likelihood1OptionText)
+        console.log(SCIEG.likelihood2OptionText)
+        //1 S, 0 UNK
+        var hypoth_1 = (SCIEG.likelihood1OptionText.replace(", ", "_")).replace(/ /g, "-");
+        var hypoth_2 = (SCIEG.likelihood2OptionText.replace(", ", "_")).replace(/ /g, "-");
         Ti.UI.currentWindow.openSaveAsDialog( function ( paths ) {
                 writeOutput( paths[0], SCIEG.toSave );
             },
@@ -221,8 +227,9 @@ $().ready( function () {
                 types:       ['csv'],
                 defaultName: getISODate() + " " +
                     $( $( '#inputs td.sampleName' )[0] ).text().replace( /[^A-Za-z\d ]/g, '' ).replace( /remove$/, '' ) + " " +
-                    $( "#likelihood1" ).val().split( "" ).join( "S-" ) + "UNK " +
-                    $( "#likelihood2" ).val().split( "" ).join( "S-" ) + "UNK.csv"
+                    hypoth_1 + " -- " + hypoth_2 + ".csv"
+                    //$( "#likelihood1" ).val().split( "" ).join( "S-" ) + "UNK " +
+                    //$( "#likelihood2" ).val().split( "" ).join( "S-" ) + "UNK.csv"
             } )
     } );
 } );

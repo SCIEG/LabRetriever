@@ -2,11 +2,13 @@
 <head>
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="css/scieg.css" rel="stylesheet" media="screen">
+    <title>LabRetriever v </title>
 	<style>
 
 	</style>
 	<script>
 		(function() {
+            document.title += Ti.API.getApplication().getVersion();
 			Ti.UI.currentWindow.setHeight( 850 );
 			Ti.UI.currentWindow.setWidth( 1200 );
 			Ti.UI.currentWindow.setX( 70 );

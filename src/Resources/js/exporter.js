@@ -47,15 +47,17 @@ SCIEG.exporter.createLabRcsv = function() {
             var locusName = (locus == 'VWA'?'vWA':locus)
             self.writeLine(locusName + "-Assumed," + assumed.join(','));
 
+            var suspects = [];//move this into the loop if LabR can handle more than 1 suspect
             for (var j = 0; j < SCIEG.selectedSamples['suspected'].length; j++) {
-                var suspects = [];
                 for (var m = 0; m < SCIEG.selectedSamples['suspected'][j][locus].length; m++) {
                     var n = SCIEG.selectedSamples['suspected'][j][locus][m];
                     suspects.push(n);
                 }
-                //suspects.sort(SCIEG.exporter.sorter);
-                self.writeLine(locusName + "-Suspected," + suspects.join(','));
             }
+            //suspects.sort(SCIEG.exporter.sorter);
+            self.writeLine(locusName + "-Suspected," + suspects.join(','));//move this line up if LabR can handle more than 1 suspect
+//            console.log(suspects.join(','))
+
             unattributed.sort(SCIEG.exporter.sorter);
             self.writeLine(locusName + "-Unattributed," + unattributed.join(','));
         }
