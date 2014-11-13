@@ -128,7 +128,7 @@ $().ready( function () {
                     SCIEG.Process.kill();
                 } else {
                     updateResultsInterval();
-                    runResultsTest(outputName, process, busy, file_dir);
+                    runResultsTest(outputName, process, busy, file_dir, likelihood1, likelihood2);
                 }
             }
         }, SCIEG.resultsInternalTime );
