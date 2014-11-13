@@ -79,8 +79,8 @@ $().ready( function () {
                 } );
                 SCIEG.toSave.push( lastRow );
                 SCIEG.toSave.push( [""] );
-                SCIEG.toSave.push( ["P(DI)", "P(DO)", "IBD Probabilities"] );
-                SCIEG.toSave.push( [ $( '#pdi' ).val(), $( 'input[name="pdo"]' ).val(),
+                SCIEG.toSave.push( ["P(DI)", "P(DO)", "fst", "IBD Probabilities"] );
+                SCIEG.toSave.push( [ $( '#pdi' ).val(), $( 'input[name="pdo"]' ).val(), $( '#fst' ).val(),
                         $( '#alleles0' ).val() + ", " + $( '#alleles1' ).val() + ", " + $( '#alleles2' ).val()] );
 
                 var file_dir = Ti.Filesystem.getApplicationDataDirectory();

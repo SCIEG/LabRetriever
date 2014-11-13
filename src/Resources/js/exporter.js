@@ -21,6 +21,7 @@ SCIEG.exporter.createLabRcsv = function() {
         self.writeLine("alpha," + $('#alpha').val());
         self.writeLine("Drop-in rate," + $('#pdi').val());
         self.writeLine("Drop-out rate," + val.value);
+        self.writeLine("fst," + $('#fst').val());
         self.writeLine("IBD Probs," + $('#alleles0').val() + ',' + $('#alleles1').val() + ',' + $('#alleles2').val());
         self.writeLine("Race," + $('#race').val());
 
